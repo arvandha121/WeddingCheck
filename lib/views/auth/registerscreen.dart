@@ -201,6 +201,13 @@ class _RegisterState extends State<Register> {
                             onPressed: () {
                               if (formKey.currentState!.validate()) {
                                 register();
+                                Get.snackbar(
+                                  "Register",
+                                  "Berhasil membuat akun",
+                                  snackPosition: SnackPosition.BOTTOM,
+                                  backgroundColor: Colors.white,
+                                  colorText: Colors.black,
+                                );
                               }
                             },
                             style: ElevatedButton.styleFrom(

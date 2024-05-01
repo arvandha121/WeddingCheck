@@ -38,7 +38,12 @@ class _LoginState extends State<Login> {
     if (response == true) {
       // Jika login berhasil maka akan diarahkan ke halaman homepage
       if (!mounted) return;
-      Get.to(HomePage());
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
     } else {
       // Jika salah, akan memunculkan message "Username atau Password salah"
       setState(() {
@@ -153,6 +158,13 @@ class _LoginState extends State<Login> {
                             onPressed: () {
                               if (formKey.currentState!.validate()) {
                                 login();
+                                Get.snackbar(
+                                  "Login",
+                                  "Login anda berhasil",
+                                  snackPosition: SnackPosition.BOTTOM,
+                                  backgroundColor: Colors.white,
+                                  colorText: Colors.black,
+                                );
                               }
                               ;
                             },
