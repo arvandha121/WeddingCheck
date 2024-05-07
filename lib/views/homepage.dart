@@ -61,6 +61,12 @@ class _HomePageState extends State<HomePage> {
                     cancelTextColor: Colors.black,
                     onConfirm: () {
                       notifier.logout(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Logout berhasil'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
                     },
                   );
                 },

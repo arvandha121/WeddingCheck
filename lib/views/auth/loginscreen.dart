@@ -186,15 +186,26 @@ class _LoginState extends State<Login> {
                                       builder: (context) => const HomePage(),
                                     ),
                                   );
+
+                                  // Tampilkan Snackbar
+                                  if (response == true) {
+                                    // Jika login berhasil maka akan memunculkan message "Login berhasil"
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Login berhasil'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                  } else {
+                                    // Jika login gagal maka tidak akan memunculkan message.
+                                    return null;
+                                  }
                                 } else {
                                   // Jika salah, akan memunculkan message "Username atau Password salah"
                                   setState(() {
                                     isLogin = true;
                                   });
                                 }
-                                // if (formKey.currentState!.validate()) {
-                                //   // login();
-                                // }
                               },
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weddingcheck/views/auth/loginscreen.dart';
+import 'package:weddingcheck/views/splashscreen.dart';
 
 class UiProvider extends ChangeNotifier {
   bool _isChecked = false;
@@ -35,7 +36,7 @@ class UiProvider extends ChangeNotifier {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => const Login(),
+        builder: (context) => const Splash(),
       ),
     );
     notifyListeners();
