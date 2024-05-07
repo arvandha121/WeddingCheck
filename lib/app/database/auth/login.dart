@@ -43,4 +43,12 @@ class DatabaseHelper {
     final Database db = await initDB();
     return db.insert('users', user.toMap());
   }
+
+  // Users get current details
+  Future<Users?> getUsers(String usrName) async {
+    final Database db = await initDB();
+    var res =
+        await db.query("users", where: "usrName = ?", whereArgs: [usrName]);
+    return res.isNotEmpty ? Users.fromMap(res.first) : null;
+  }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weddingcheck/app/database/auth/login.dart';
 import 'package:weddingcheck/app/json/model/users.dart';
+import 'package:weddingcheck/app/provider/provider.dart';
 import 'package:weddingcheck/views/homepage.dart';
 import 'package:weddingcheck/views/auth/registerscreen.dart';
 
@@ -15,6 +17,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   // digunakan untuk menampilkan dan menyembunyikan password
+  bool isChecked = false;
   bool isHidden = true;
   bool isLogin = false; // Digunakan untuk login
 
@@ -28,29 +31,7 @@ class _LoginState extends State<Login> {
   final db = DatabaseHelper();
 
   // Function ini digunakan untuk button login
-  login() async {
-    var response = await db.login(
-      Users(
-        usrName: usernameController.text,
-        usrPassword: passwordController.text,
-      ),
-    );
-    if (response == true) {
-      // Jika login berhasil maka akan diarahkan ke halaman homepage
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(),
-        ),
-      );
-    } else {
-      // Jika salah, akan memunculkan message "Username atau Password salah"
-      setState(() {
-        isLogin = true;
-      });
-    }
-  }
+  login() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +126,31 @@ class _LoginState extends State<Login> {
                         obscureText: isHidden,
                       ),
                       SizedBox(
-                        height: 35,
+                        height: 15,
+                      ),
+                      Consumer<UiProvider>(builder: (
+                        context,
+                        UiProvider notifier,
+                        child,
+                      ) {
+                        return Row(
+                          children: [
+                            Checkbox(
+                              value: notifier.isChecked,
+                              onChanged: (value) => notifier.toggleCheck(),
+                            ),
+                            Text(
+                              'remember me?',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                      SizedBox(
+                        height: 15,
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
@@ -154,29 +159,53 @@ class _LoginState extends State<Login> {
                         child: SizedBox(
                           height: 50,
                           width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (formKey.currentState!.validate()) {
-                                login();
-                                Get.snackbar(
-                                  "Login",
-                                  "Login anda berhasil",
-                                  snackPosition: SnackPosition.BOTTOM,
-                                  backgroundColor: Colors.white,
-                                  colorText: Colors.black,
+                          child: Consumer<UiProvider>(builder: (
+                            context,
+                            UiProvider notifier,
+                            child,
+                          ) {
+                            return ElevatedButton(
+                              onPressed: () async {
+                                var response = await db.login(
+                                  Users(
+                                    usrName: usernameController.text,
+                                    usrPassword: passwordController.text,
+                                  ),
                                 );
-                              }
-                              ;
-                            },
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
+                                if (response == true) {
+                                  // Jika checklist remember me then setRememberMe is true
+                                  if (notifier.isChecked == true) {
+                                    notifier.setRememberMe();
+                                  }
+
+                                  // Jika login berhasil maka akan diarahkan ke halaman homepage
+                                  if (!mounted) return;
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const HomePage(),
+                                    ),
+                                  );
+                                } else {
+                                  // Jika salah, akan memunculkan message "Username atau Password salah"
+                                  setState(() {
+                                    isLogin = true;
+                                  });
+                                }
+                                // if (formKey.currentState!.validate()) {
+                                //   // login();
+                                // }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
                               ),
-                            ),
-                            child: Text(
-                              "Login",
-                            ),
-                          ),
+                              child: Text(
+                                "Login",
+                              ),
+                            );
+                          }),
                         ),
                       ),
                       SizedBox(

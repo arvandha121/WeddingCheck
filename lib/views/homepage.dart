@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:get/get.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:provider/provider.dart';
+import 'package:weddingcheck/app/provider/provider.dart';
+import 'package:weddingcheck/views/auth/loginscreen.dart';
 import 'other/drawer/drawer.dart';
 import 'other/scanner/camerascan.dart';
 import 'other/navbar/bottomnavbar.dart'; // Import MyBottomNavBar class
@@ -38,9 +44,31 @@ class _HomePageState extends State<HomePage> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 12.0),
-            child: Icon(
-              Icons.logout,
-            ),
+            child: Consumer<UiProvider>(builder: (
+              context,
+              UiProvider notifier,
+              child,
+            ) {
+              return IconButton(
+                onPressed: () {
+                  // Tambahkan logika untuk keluar (logout) di sini
+                  Get.defaultDialog(
+                    title: "Logout",
+                    middleText: "Ingin keluar dari aplikasi?",
+                    textConfirm: "Iya",
+                    textCancel: "Tidak",
+                    confirmTextColor: Colors.white,
+                    cancelTextColor: Colors.black,
+                    onConfirm: () {
+                      notifier.logout(context);
+                    },
+                  );
+                },
+                icon: Icon(
+                  Icons.logout,
+                ),
+              );
+            }),
           ),
         ],
       ),
