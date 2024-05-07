@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:weddingcheck/app/database/auth/login.dart';
+import 'package:weddingcheck/app/database/auth/auth.dart';
 import 'package:weddingcheck/app/json/model/users.dart';
 import 'package:weddingcheck/views/homepage.dart';
 import 'package:weddingcheck/views/auth/loginscreen.dart';
