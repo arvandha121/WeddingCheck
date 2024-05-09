@@ -139,13 +139,13 @@ class _EditsState extends State<Edits> {
                 controller: gambarController,
                 readOnly: true,
                 decoration: InputDecoration(
-                  labelText: "Gambar",
+                  labelText: "Tanggal",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20)),
                   prefixIcon: Icon(Icons.calendar_today),
                 ),
                 validator: (value) =>
-                    value!.isEmpty ? "Gambar tidak boleh kosong" : null,
+                    value!.isEmpty ? "Tanggal tidak boleh kosong" : null,
               ),
               SizedBox(height: 20),
               DropdownButtonFormField<String>(
