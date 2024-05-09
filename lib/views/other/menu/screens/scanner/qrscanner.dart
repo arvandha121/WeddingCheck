@@ -5,14 +5,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-class CameraScanner extends StatefulWidget {
-  const CameraScanner({super.key});
+class QRScanner extends StatefulWidget {
+  const QRScanner({super.key});
 
   @override
-  State<CameraScanner> createState() => _CameraScannerState();
+  State<QRScanner> createState() => _QRScannerState();
 }
 
-class _CameraScannerState extends State<CameraScanner> {
+class _QRScannerState extends State<QRScanner> {
   @override
   Widget build(BuildContext context) {
     return Scaffold();

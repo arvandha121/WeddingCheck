@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:weddingcheck/app/database/auth/auth.dart';
-import 'package:weddingcheck/app/json/model/users.dart';
+import 'package:weddingcheck/app/database/dbHelper.dart';
+import 'package:weddingcheck/app/model/users.dart';
 import 'package:weddingcheck/views/homepage.dart';
 import 'package:weddingcheck/views/auth/loginscreen.dart';
 
@@ -27,24 +27,33 @@ class _RegisterState extends State<Register> {
   final formKey = GlobalKey<FormState>();
 
   final db = DatabaseHelper();
-
-  register() {
-    db
-        .register(
+  register() async {
+    if (formKey.currentState!.validate()) {
+      try {
+        await db.register(
           Users(
               usrName: usernameController.text,
               usrPassword: passwordController.text),
-        )
-        .whenComplete(
-          () => {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Login(),
-              ),
-            ),
-          },
         );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Login(),
+          ),
+        );
+        Get.snackbar(
+          "Success",
+          "Item created successfully",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } catch (e) {
+        Get.snackbar(
+          "Error",
+          "Failed to create item: $e",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    }
   }
 
   @override

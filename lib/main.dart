@@ -18,17 +18,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => UiProvider()..initStorage(),
-      child: Consumer<UiProvider>(builder: (
-        context,
-        UiProvider notifier,
-        child,
-      ) {
-        return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          // if rememberme is true goto home and not show me login screen, otherwise go to login
-          home: notifier.rememberMe ? const HomePage() : const Splash(),
-        );
-      }),
+      child: Consumer<UiProvider>(
+        builder: (
+          context,
+          UiProvider notifier,
+          child,
+        ) {
+          return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            // if rememberme is true goto home and not show me login screen, otherwise go to login
+            home: notifier.rememberMe ? const HomePage() : const Splash(),
+          );
+        },
+      ),
     );
   }
 }

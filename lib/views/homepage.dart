@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:weddingcheck/app/provider/provider.dart';
-import 'package:weddingcheck/views/auth/loginscreen.dart';
-import 'other/drawer/drawer.dart';
-import 'other/scanner/camerascan.dart';
-import 'other/navbar/bottomnavbar.dart'; // Import MyBottomNavBar class
+import 'package:weddingcheck/views/other/appbar/appbar.dart';
+import 'package:weddingcheck/views/other/menu/bottomnavbar.dart';
+import 'package:weddingcheck/views/other/menu/screens/homes/homes.dart';
+import 'package:weddingcheck/views/other/menu/screens/scanner/qrscanner.dart';
+import 'package:weddingcheck/views/other/menu/screens/settings/settings.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,13 +20,13 @@ class _HomePageState extends State<HomePage> {
 
   List showWidgets = [
     Center(
-      child: Text("Homes"),
+      child: Homes(),
     ),
     Center(
-      child: CameraScanner(),
+      child: QRScanner(),
     ),
     Center(
-      child: Text("Profile"),
+      child: Settings(),
     ),
   ];
 
@@ -40,45 +39,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: Consumer<UiProvider>(builder: (
-              context,
-              UiProvider notifier,
-              child,
-            ) {
-              return IconButton(
-                onPressed: () {
-                  // Tambahkan logika untuk keluar (logout) di sini
-                  Get.defaultDialog(
-                    title: "Logout",
-                    middleText: "Ingin keluar dari aplikasi?",
-                    textConfirm: "Iya",
-                    textCancel: "Tidak",
-                    confirmTextColor: Colors.white,
-                    cancelTextColor: Colors.black,
-                    onConfirm: () {
-                      notifier.logout(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Logout berhasil'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    },
-                  );
-                },
-                icon: Icon(
-                  Icons.logout,
-                ),
-              );
-            }),
-          ),
-        ],
-      ),
-      drawer: MyDrawer(),
+      appBar: MyAppBar(),
+      // drawer: MyDrawer(),
       body: showWidgets[selectedIndex],
       bottomNavigationBar: MyBottomNavBar(
         currentIndex: selectedIndex,
