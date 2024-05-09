@@ -12,9 +12,8 @@ class _SettingsState extends State<Settings> {
   final DatabaseHelper list = DatabaseHelper();
 
   void _deleteAllItems() async {
-    // Fetch all items before deleting
-    var allItems = await list
-        .readListItem(); // Ensure this function returns a List<ListItem>
+    var allItems = await list.readListItem();
+    print("Items fetched for deletion: ${allItems.length}");
 
     showDialog(
       context: context,
@@ -29,21 +28,23 @@ class _SettingsState extends State<Settings> {
             ),
             TextButton(
               onPressed: () async {
-                // Process to delete all data
                 await list.clearAllListItems();
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: const Text('Semua data berhasil dihapus.'),
-                    duration: const Duration(seconds: 8), // Durasi 8 detik
+                    duration: const Duration(seconds: 8),
                     action: SnackBarAction(
                       label: 'UNDO',
                       onPressed: () async {
-                        // Process to restore all data
-                        if (allItems.isNotEmpty) {
-                          for (var item in allItems) {
-                            await list.insertListItem(item);
-                          }
+                        if (!mounted) return;
+                        print("Attempting to restore items");
+
+                        for (var item in allItems) {
+                          var result = await list.insertListItem(item);
+                          print("Restore result for item ${item.id}: $result");
+                        }
+                        if (mounted) {
                           setState(() {});
                         }
                       },
