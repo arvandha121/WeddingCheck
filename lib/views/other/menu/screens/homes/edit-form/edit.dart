@@ -41,6 +41,29 @@ class _EditsState extends State<Edits> {
     currentStatus = widget.item.keterangan;
   }
 
+  // void updateListItem() async {
+  //   if (formKey.currentState!.validate()) {
+  //     ListItem updatedItem = ListItem(
+  //       id: widget.item.id,
+  //       nama: nameController.text,
+  //       alamat: alamatController.text,
+  //       kota: kotaController.text,
+  //       kecamatan: kecamatanController.text,
+  //       keluarga: keluargaController.text,
+  //       gambar: gambarController.text,
+  //       keterangan: currentStatus ?? widget.item.keterangan,
+  //     );
+
+  //     await dbHelper.updateListItem(updatedItem);
+  //     Get.back();
+  //     Get.snackbar(
+  //       "Success",
+  //       "Item updated successfully",
+  //       snackPosition: SnackPosition.BOTTOM,
+  //     );
+  //   }
+  // }
+
   void updateListItem() async {
     if (formKey.currentState!.validate()) {
       ListItem updatedItem = ListItem(
@@ -55,12 +78,22 @@ class _EditsState extends State<Edits> {
       );
 
       await dbHelper.updateListItem(updatedItem);
-      Get.back();
+
+      // Display a Snackbar with a success message
       Get.snackbar(
-        "Success",
-        "Item updated successfully",
-        snackPosition: SnackPosition.BOTTOM,
-      );
+          "Success", // title
+          "Item updated successfully", // message
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          borderRadius: 20,
+          margin: EdgeInsets.all(10),
+          snackStyle: SnackStyle.FLOATING,
+          duration: Duration(seconds: 3) // Duration the Snackbar is visible
+          );
+
+      // Optionally, you can call the callback to inform any parent widgets of the update
+      widget.onEditSuccess();
     }
   }
 
@@ -136,18 +169,21 @@ class _EditsState extends State<Edits> {
                 validator: (value) =>
                     value!.isEmpty ? "Kecamatan tidak boleh kosong" : null,
               ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: gambarController,
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: "Tanggal",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.calendar_today),
+              Visibility(
+                visible: false, // Set to false to hide the TextFormField
+                child: TextFormField(
+                  controller: gambarController,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: "Tanggal",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    prefixIcon: Icon(Icons.calendar_today),
+                  ),
+                  validator: (value) =>
+                      value!.isEmpty ? "Tanggal tidak boleh kosong" : null,
                 ),
-                validator: (value) =>
-                    value!.isEmpty ? "Tanggal tidak boleh kosong" : null,
               ),
               SizedBox(height: 20),
               DropdownButtonFormField<String>(

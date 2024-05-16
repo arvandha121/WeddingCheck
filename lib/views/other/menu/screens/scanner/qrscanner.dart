@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:weddingcheck/app/database/dbHelper.dart';
 import 'package:weddingcheck/app/model/listItem.dart';
-import 'package:weddingcheck/views/other/menu/screens/homes/detail-form/detail.dart';
 
 class QRScanner extends StatefulWidget {
   const QRScanner({Key? key}) : super(key: key);
@@ -32,7 +31,6 @@ class _QRScannerState extends State<QRScanner> {
     super.dispose();
   }
 
-  //
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
@@ -40,14 +38,26 @@ class _QRScannerState extends State<QRScanner> {
       final String scannedData = scanData.code ?? "";
       fetchListItemByGambar(scannedData).then((item) {
         if (item != null) {
-          // Update keterangan menjadi 'hadir'
-          DatabaseHelper().updateKeteranganHadir(item.id!).then((_) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Detail(item: item),
-              ),
-            ).then((_) => controller.resumeCamera());
+          updateListItemStatus(item.id!).then((_) {
+            // Ensure updateListItemStatus accepts only one argument
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Confirmation"),
+                  content: Text("Sudah terdaftar hadir"),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text("OK"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        controller.resumeCamera();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
           });
         } else {
           showDialog(
@@ -70,42 +80,31 @@ class _QRScannerState extends State<QRScanner> {
           );
         }
       });
-      refreshCamera();
     });
-    refreshCamera();
+    controller.resumeCamera();
   }
 
-  void refreshCamera() async {
-    await controller?.pauseCamera();
-    await controller?.resumeCamera();
+  Future<void> updateListItemStatus(int id) async {
+    DatabaseHelper dbHelper = DatabaseHelper();
+    await dbHelper.updateKeteranganHadir(id);
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 5,
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: _onQRViewCreated,
-              overlay: QrScannerOverlayShape(
-                borderColor: Colors.red,
-                borderRadius: 10,
-                borderLength: 30,
-                borderWidth: 10,
-                cutOutSize: MediaQuery.of(context).size.width * 0.8,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Center(
-              child: Text('Scan a QR Code'),
-            ),
-          ),
-        ],
+      body: QRView(
+        key: qrKey,
+        onQRViewCreated: _onQRViewCreated,
+        overlay: QrScannerOverlayShape(
+          borderColor: Colors.red,
+          borderRadius: 10,
+          borderLength: 30,
+          borderWidth: 10,
+          cutOutSize: MediaQuery.of(context).size.width * 0.8,
+        ),
       ),
     );
   }
