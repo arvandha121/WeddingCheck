@@ -91,8 +91,9 @@ class DatabaseHelper {
     } else {
       maps = await db.query(
         'list',
-        where: 'nama LIKE ? OR alamat LIKE ? OR keluarga LIKE ?',
-        whereArgs: ['%$query%', '%$query%', '%$query%'],
+        where:
+            'nama LIKE ? OR KOTA LIKE ? OR keluarga LIKE ? OR keterangan LIKE ?',
+        whereArgs: ['%$query%', '%$query%', '%$query%', '%$query%'],
       );
     }
     return List.generate(maps.length, (i) {
