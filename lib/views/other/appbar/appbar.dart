@@ -33,7 +33,9 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                   },
                 );
               },
-              icon: Icon(Icons.logout),
+              icon: Icon(
+                Icons.logout,
+              ),
             );
           },
         ),

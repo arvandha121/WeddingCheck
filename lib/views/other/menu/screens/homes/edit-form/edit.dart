@@ -5,11 +5,13 @@ import 'package:weddingcheck/app/model/listItem.dart';
 
 class Edits extends StatefulWidget {
   final ListItem item;
+  final VoidCallback onEditSuccess; // Callback to be called on successful edit
 
-  const Edits({Key? key, required this.item}) : super(key: key);
+  const Edits({Key? key, required this.item, required this.onEditSuccess})
+      : super(key: key);
 
   @override
-  State<Edits> createState() => _EditsState();
+  _EditsState createState() => _EditsState();
 }
 
 class _EditsState extends State<Edits> {

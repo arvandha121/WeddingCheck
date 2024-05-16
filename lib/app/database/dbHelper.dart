@@ -123,4 +123,33 @@ class DatabaseHelper {
     final db = await database;
     await db.delete('list'); // Deletes all rows in the 'list' table
   }
+
+  Future<ListItem?> getListItemByGambar(String gambar) async {
+    var db = await database;
+    var result =
+        await db.query('list', where: 'gambar = ?', whereArgs: [gambar]);
+    if (result.isNotEmpty) {
+      return ListItem.fromMap(result.first);
+    }
+    return null;
+  }
+
+  Future<int> updateKeteranganHadir(int id) async {
+    final db = await database;
+    return await db.update(
+      'list',
+      {'keterangan': 'hadir'},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<ListItem?> fetchDetail(int id) async {
+    final db = await database;
+    var res = await db.query('list', where: 'id = ?', whereArgs: [id]);
+    if (res.isNotEmpty) {
+      return ListItem.fromMap(res.first);
+    }
+    return null;
+  }
 }

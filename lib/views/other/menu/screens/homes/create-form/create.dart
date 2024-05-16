@@ -26,6 +26,9 @@ class _CreateState extends State<Create> {
 
   void create() async {
     if (formKey.currentState!.validate()) {
+      // Set the gambarController text to name and keluarga values
+      gambarController.text = "${nameController.text}";
+
       try {
         await list.insertListItem(
           ListItem(
@@ -57,19 +60,21 @@ class _CreateState extends State<Create> {
     }
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null) {
-      int randomId = Random().nextInt(10000);
-      String formattedDate = "${picked.toLocal()}".split(' ')[0];
-      gambarController.text = "$formattedDate-$randomId";
-    }
-  }
+  // Future<void> _selectDate(BuildContext context) async {
+  //   final DateTime? picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: DateTime.now(),
+  //     firstDate: DateTime(2000),
+  //     lastDate: DateTime(2101),
+  //   );
+  //   if (picked != null) {
+  //     int randomId = Random().nextInt(10000);
+  //     String formattedDate = "${picked.toLocal()}".split(' ')[0];
+  //     // Remove hyphens from the date string
+  //     String dateWithoutHyphens = formattedDate.replaceAll('-', '');
+  //     gambarController.text = "$dateWithoutHyphens$randomId";
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -144,23 +149,6 @@ class _CreateState extends State<Create> {
                 ),
                 validator: (value) =>
                     value!.isEmpty ? "Kecamatan tidak boleh kosong" : null,
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: gambarController,
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: "Tanggal",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.calendar_today),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.date_range),
-                    onPressed: () => _selectDate(context),
-                  ),
-                ),
-                validator: (value) =>
-                    value!.isEmpty ? "Tanggal tidak boleh kosong" : null,
               ),
               SizedBox(height: 30),
               ElevatedButton(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weddingcheck/views/other/menu/screens/homes/create-form/create.dart';
 import 'package:weddingcheck/app/database/dbHelper.dart';
 import 'package:weddingcheck/app/model/listItem.dart';
+import 'package:weddingcheck/views/other/menu/screens/homes/detail-form/detail.dart';
 import 'package:weddingcheck/views/other/menu/screens/homes/edit-form/edit.dart';
 
 class Homes extends StatefulWidget {
@@ -47,12 +48,29 @@ class _HomesState extends State<Homes> {
     _loadItems();
   }
 
+  // void _editItem(ListItem item) async {
+  //   // Navigate to edit page and wait for the result
+  //   final result = await Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => Edits(item: item),
+  //     ),
+  //   );
+  //   // If the edit was successful, reload the items
+  //   if (result == true) {
+  //     _loadItems();
+  //   }
+  // }
+
   void _editItem(ListItem item) async {
     // Navigate to edit page and wait for the result
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Edits(item: item),
+        builder: (context) => Edits(
+          item: item,
+          onEditSuccess: _loadItems, // Pass the callback here
+        ),
       ),
     );
     // If the edit was successful, reload the items
@@ -120,179 +138,192 @@ class _HomesState extends State<Homes> {
                         itemCount: _items.length,
                         itemBuilder: (context, index) {
                           final item = _items[index];
-                          return Card(
-                            elevation: 4,
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Container(
-                              height: 75,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 18, vertical: 18),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [Colors.blue, Colors.blueAccent],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Detail(item: item),
                                 ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          item.nama,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Text(
-                                          "${item.keterangan}",
-                                          style: TextStyle(
-                                            color: Colors.white70,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                              );
+                            },
+                            child: Card(
+                              elevation: 4,
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Container(
+                                height: 75,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 18, vertical: 18),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [Colors.blue, Colors.blueAccent],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
                                   ),
-                                  CircleAvatar(
-                                    backgroundColor: Colors.amber,
-                                    radius: 18,
-                                    child: IconButton(
-                                      icon: Icon(
-                                        Icons.edit,
-                                        size: 20,
-                                        color: Colors.black,
-                                      ),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => Edits(
-                                              item: item,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item.nama,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(width: 5),
-                                  CircleAvatar(
-                                    backgroundColor: Colors.red,
-                                    radius: 18,
-                                    child: IconButton(
-                                      icon: Icon(
-                                        Icons.delete,
-                                        size: 20,
-                                        color: Colors.white,
+                                          Text(
+                                            "${item.keterangan}",
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: const Text('Confirm'),
-                                              content: const Text(
-                                                'Yakin untuk menghapus list ini?',
+                                    ),
+                                    CircleAvatar(
+                                      backgroundColor: Colors.amber,
+                                      radius: 18,
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.edit,
+                                          size: 20,
+                                          color: Colors.black,
+                                        ),
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => Edits(
+                                                item: item,
+                                                onEditSuccess: _loadItems,
                                               ),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.of(context)
-                                                          .pop(false),
-                                                  child: const Text('Tidak'),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    SizedBox(width: 5),
+                                    CircleAvatar(
+                                      backgroundColor: Colors.red,
+                                      radius: 18,
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.delete,
+                                          size: 20,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text('Confirm'),
+                                                content: const Text(
+                                                  'Yakin untuk menghapus list ini?',
                                                 ),
-                                                TextButton(
-                                                  onPressed: () async {
-                                                    if (_items[index].id !=
-                                                        null) {
-                                                      ListItem deletedItem =
-                                                          _items[index];
-                                                      int? deletedIndex = index;
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.of(context)
+                                                            .pop(false),
+                                                    child: const Text('Tidak'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () async {
+                                                      if (_items[index].id !=
+                                                          null) {
+                                                        ListItem deletedItem =
+                                                            _items[index];
+                                                        int? deletedIndex =
+                                                            index;
 
-                                                      int result = await list
-                                                          .deleteListItem(
-                                                        deletedItem.id!,
-                                                      );
-                                                      if (result != 0) {
-                                                        setState(
-                                                          () {
-                                                            _items.removeAt(
-                                                                index);
-                                                          },
+                                                        int result = await list
+                                                            .deleteListItem(
+                                                          deletedItem.id!,
                                                         );
+                                                        if (result != 0) {
+                                                          setState(
+                                                            () {
+                                                              _items.removeAt(
+                                                                  index);
+                                                            },
+                                                          );
 
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                          SnackBar(
-                                                            content: Text(
-                                                              "Item deleted",
-                                                            ),
-                                                            action:
-                                                                SnackBarAction(
-                                                              label: "UNDO",
-                                                              onPressed:
-                                                                  () async {
-                                                                int reAddResult =
-                                                                    await list
-                                                                        .insertListItem(
-                                                                  deletedItem,
-                                                                );
-                                                                if (reAddResult !=
-                                                                    0) {
-                                                                  setState(
-                                                                    () {
-                                                                      _items
-                                                                          .insert(
-                                                                        deletedIndex,
-                                                                        deletedItem,
-                                                                      );
-                                                                    },
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(
+                                                            SnackBar(
+                                                              content: Text(
+                                                                "Item deleted",
+                                                              ),
+                                                              action:
+                                                                  SnackBarAction(
+                                                                label: "UNDO",
+                                                                onPressed:
+                                                                    () async {
+                                                                  int reAddResult =
+                                                                      await list
+                                                                          .insertListItem(
+                                                                    deletedItem,
                                                                   );
-                                                                }
-                                                              },
+                                                                  if (reAddResult !=
+                                                                      0) {
+                                                                    setState(
+                                                                      () {
+                                                                        _items
+                                                                            .insert(
+                                                                          deletedIndex,
+                                                                          deletedItem,
+                                                                        );
+                                                                      },
+                                                                    );
+                                                                  }
+                                                                },
+                                                              ),
+                                                              duration:
+                                                                  Duration(
+                                                                seconds: 5,
+                                                              ),
                                                             ),
-                                                            duration: Duration(
-                                                              seconds: 5,
-                                                            ),
-                                                          ),
-                                                        );
+                                                          );
+                                                        }
+                                                      } else {
+                                                        print(
+                                                            "Error: Item ID is null");
                                                       }
-                                                    } else {
-                                                      print(
-                                                          "Error: Item ID is null");
-                                                    }
-                                                    Navigator.of(context)
-                                                        .pop(true);
-                                                  },
-                                                  child: const Text(
-                                                    'Hapus',
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.red,
+                                                      Navigator.of(context)
+                                                          .pop(true);
+                                                    },
+                                                    child: const Text(
+                                                      'Hapus',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.red,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  )
-                                ],
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           );

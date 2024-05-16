@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:weddingcheck/app/model/listItem.dart';
 import 'package:weddingcheck/app/provider/provider.dart';
 import 'package:weddingcheck/views/other/appbar/appbar.dart';
 import 'package:weddingcheck/views/other/menu/bottomnavbar.dart';
@@ -16,6 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<ListItem> items = [];
   late int selectedIndex;
 
   List showWidgets = [
