@@ -48,20 +48,6 @@ class _HomesState extends State<Homes> {
     _loadItems();
   }
 
-  // void _editItem(ListItem item) async {
-  //   // Navigate to edit page and wait for the result
-  //   final result = await Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => Edits(item: item),
-  //     ),
-  //   );
-  //   // If the edit was successful, reload the items
-  //   if (result == true) {
-  //     _loadItems();
-  //   }
-  // }
-
   void _editItem(ListItem item) async {
     // Navigate to edit page and wait for the result
     final result = await Navigator.push(

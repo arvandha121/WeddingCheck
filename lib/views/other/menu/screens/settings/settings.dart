@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:weddingcheck/app/database/dbHelper.dart';
 import 'package:weddingcheck/app/provider/provider.dart';
 import 'package:weddingcheck/views/splashscreen.dart';
 
@@ -66,7 +67,28 @@ class _SettingsState extends State<Settings> {
             title: Text('Hapus Semua List'),
             subtitle: Text('Menghapus semua item yang tersimpan'),
             onTap: () {
-              // Assuming delete all items logic is handled elsewhere
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Konfirmasi'),
+                    content: const Text('Yakin untuk menghapus semua item?'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('Batal'),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                          await DatabaseHelper().clearAllListItems();
+                        },
+                        child: const Text('Hapus Semua'),
+                      ),
+                    ],
+                  );
+                },
+              );
             },
             tileColor: Colors.white,
             shape: RoundedRectangleBorder(

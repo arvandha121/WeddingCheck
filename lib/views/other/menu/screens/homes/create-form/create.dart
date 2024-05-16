@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:weddingcheck/app/database/dbHelper.dart';
 import 'package:weddingcheck/app/model/listItem.dart';
 import 'package:weddingcheck/views/homepage.dart';
-import 'dart:math';
 
 class Create extends StatefulWidget {
   const Create({Key? key}) : super(key: key);
@@ -59,22 +58,6 @@ class _CreateState extends State<Create> {
       }
     }
   }
-
-  // Future<void> _selectDate(BuildContext context) async {
-  //   final DateTime? picked = await showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime(2000),
-  //     lastDate: DateTime(2101),
-  //   );
-  //   if (picked != null) {
-  //     int randomId = Random().nextInt(10000);
-  //     String formattedDate = "${picked.toLocal()}".split(' ')[0];
-  //     // Remove hyphens from the date string
-  //     String dateWithoutHyphens = formattedDate.replaceAll('-', '');
-  //     gambarController.text = "$dateWithoutHyphens$randomId";
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

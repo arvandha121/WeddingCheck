@@ -41,29 +41,6 @@ class _EditsState extends State<Edits> {
     currentStatus = widget.item.keterangan;
   }
 
-  // void updateListItem() async {
-  //   if (formKey.currentState!.validate()) {
-  //     ListItem updatedItem = ListItem(
-  //       id: widget.item.id,
-  //       nama: nameController.text,
-  //       alamat: alamatController.text,
-  //       kota: kotaController.text,
-  //       kecamatan: kecamatanController.text,
-  //       keluarga: keluargaController.text,
-  //       gambar: gambarController.text,
-  //       keterangan: currentStatus ?? widget.item.keterangan,
-  //     );
-
-  //     await dbHelper.updateListItem(updatedItem);
-  //     Get.back();
-  //     Get.snackbar(
-  //       "Success",
-  //       "Item updated successfully",
-  //       snackPosition: SnackPosition.BOTTOM,
-  //     );
-  //   }
-  // }
-
   void updateListItem() async {
     if (formKey.currentState!.validate()) {
       ListItem updatedItem = ListItem(
