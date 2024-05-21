@@ -5,7 +5,8 @@ import 'package:weddingcheck/app/model/listItem.dart';
 import 'package:weddingcheck/views/homepage.dart';
 
 class Create extends StatefulWidget {
-  const Create({Key? key}) : super(key: key);
+  final int parentId;
+  const Create({Key? key, required this.parentId}) : super(key: key);
 
   @override
   State<Create> createState() => _CreateState();
@@ -31,6 +32,7 @@ class _CreateState extends State<Create> {
       try {
         await list.insertListItem(
           ListItem(
+            parentId: widget.parentId,
             nama: nameController.text,
             alamat: alamatController.text,
             kota: kotaController.text,
@@ -40,10 +42,11 @@ class _CreateState extends State<Create> {
             keterangan: keteranganController.text,
           ),
         );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
+        Navigator.pop(context, true);
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => HomePage()),
+        // );
         Get.snackbar(
           "Success",
           "Item created successfully",

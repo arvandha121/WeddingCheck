@@ -2,6 +2,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/material.dart';
 import 'package:weddingcheck/app/model/listItem.dart';
+import 'package:weddingcheck/app/model/parentListItem.dart';
 import 'package:weddingcheck/app/model/users.dart';
 // Update this path to where your ListItem model is located
 
@@ -30,7 +31,7 @@ class DatabaseHelper {
   }
 
   Future _onCreate(Database db, int version) async {
-    // Create users table
+    // Create users table users auth
     await db.execute('''
       CREATE TABLE users (
         usrId INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,17 +40,33 @@ class DatabaseHelper {
       );
     ''');
 
-    // Create list table
+    // Create list table children list (tamu)
     await db.execute('''
       CREATE TABLE list (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        parentId INTEGER,
         nama TEXT NOT NULL,
         alamat TEXT NOT NULL,
         kota TEXT NOT NULL,
         kecamatan TEXT NOT NULL,
         keluarga TEXT,
         gambar TEXT NOT NULL,
-        keterangan TEXT NOT NULL DEFAULT 'belum hadir' CHECK(keterangan IN ('hadir', 'belum hadir'))
+        keterangan TEXT NOT NULL DEFAULT 'belum hadir' CHECK(keterangan IN ('hadir', 'belum hadir')),
+        FOREIGN KEY (parentId) REFERENCES parentlist(id)
+      );
+    ''');
+
+    // Create list table parent list
+    await db.execute('''
+      CREATE TABLE parentlist (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        namapria TEXT NOT NULL,
+        namawanita TEXT NOT NULL,
+        tanggal TEXT NOT NULL,
+        akad TEXT NOT NULL,
+        resepsi TEXT NOT NULL,
+        lokasi TEXT NOT NULL
       );
     ''');
   }
@@ -120,9 +137,19 @@ class DatabaseHelper {
     );
   }
 
+  Future<int> updateKeteranganHadir(int id) async {
+    final db = await database;
+    return await db.update(
+      'list',
+      {'keterangan': 'hadir'},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   Future<void> clearAllListItems() async {
     final db = await database;
-    await db.delete('list'); // Deletes all rows in the 'list' table
+    await db.delete('list');
   }
 
   Future<ListItem?> getListItemByGambar(String gambar) async {
@@ -135,16 +162,6 @@ class DatabaseHelper {
     return null;
   }
 
-  Future<int> updateKeteranganHadir(int id) async {
-    final db = await database;
-    return await db.update(
-      'list',
-      {'keterangan': 'hadir'},
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-  }
-
   Future<ListItem?> fetchDetail(int id) async {
     final db = await database;
     var res = await db.query('list', where: 'id = ?', whereArgs: [id]);
@@ -152,5 +169,63 @@ class DatabaseHelper {
       return ListItem.fromMap(res.first);
     }
     return null;
+  }
+
+  Future<int> insertParentListItem(ParentListItem parentListItem) async {
+    final db = await database;
+    return db.insert('parentlist', parentListItem.toMap());
+  }
+
+  Future<List<ParentListItem>> getParent() async {
+    final db = await _instance.database;
+    final result = await db.query('parentlist');
+    return result.map((json) => ParentListItem.fromMap(json)).toList();
+  }
+
+  Future<List<ListItem>> getChildren(int parentId, {String query = ''}) async {
+    final db = await database;
+    List<Map<String, dynamic>> maps;
+    if (query.isEmpty) {
+      maps = await db.query(
+        'list',
+        where: 'parentId = ?',
+        whereArgs: [parentId],
+      );
+    } else {
+      maps = await db.query(
+        'list',
+        where:
+            'parentId = ? AND (nama LIKE ? OR kota LIKE ? OR keluarga LIKE ? OR keterangan LIKE ?)',
+        whereArgs: [parentId, '%$query%'],
+      );
+    }
+
+    return List.generate(maps.length, (i) {
+      return ListItem.fromMap(maps[i]);
+    });
+  }
+
+  Future<void> close() async {
+    final db = await _instance.database;
+    db.close();
+  }
+
+  Future<void> updateParentListItem(ParentListItem item) async {
+    final db = await database;
+    await db.update(
+      'parentlist', // Make sure this is the correct table name
+      item.toMap(), // Assuming you have a method to convert item to a map
+      where: 'id = ?',
+      whereArgs: [item.id],
+    );
+  }
+
+  Future<void> deleteParentListItem(int? id) async {
+    final db = await database;
+    await db.delete(
+      'parentlist',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }

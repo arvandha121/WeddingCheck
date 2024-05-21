@@ -5,7 +5,8 @@ import 'package:weddingcheck/app/model/listItem.dart';
 import 'package:weddingcheck/app/provider/provider.dart';
 import 'package:weddingcheck/views/other/appbar/appbar.dart';
 import 'package:weddingcheck/views/other/menu/bottomnavbar.dart';
-import 'package:weddingcheck/views/other/menu/screens/homes/homes.dart';
+import 'package:weddingcheck/views/other/menu/screens/homes-child/homes.dart';
+import 'package:weddingcheck/views/other/menu/screens/homes-parent/homes.dart';
 import 'package:weddingcheck/views/other/menu/screens/scanner/qrscanner.dart';
 import 'package:weddingcheck/views/other/menu/screens/settings/settings.dart';
 
@@ -22,7 +23,7 @@ class _HomePageState extends State<HomePage> {
 
   List showWidgets = [
     Center(
-      child: Homes(),
+      child: HomesParent(),
     ),
     Center(
       child: QRScanner(),

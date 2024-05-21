@@ -45,6 +45,7 @@ class _EditsState extends State<Edits> {
     if (formKey.currentState!.validate()) {
       ListItem updatedItem = ListItem(
         id: widget.item.id,
+        parentId: widget.item.parentId,
         nama: nameController.text,
         alamat: alamatController.text,
         kota: kotaController.text,
@@ -53,6 +54,8 @@ class _EditsState extends State<Edits> {
         gambar: gambarController.text,
         keterangan: currentStatus ?? widget.item.keterangan,
       );
+
+      Navigator.pop(context, true);
 
       await dbHelper.updateListItem(updatedItem);
 
