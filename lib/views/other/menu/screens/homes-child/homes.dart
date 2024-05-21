@@ -58,16 +58,16 @@ class _HomesChildState extends State<HomesChild> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("List Tamu ${widget.parentId}"),
+        title: Text("List Tamu"),
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.only(
-              top: 15.0,
+              top: 18.0,
               right: 12.0,
               left: 12.0,
-              bottom: 8.0,
+              bottom: 18.0,
             ),
             child: Row(
               children: <Widget>[
@@ -89,18 +89,18 @@ class _HomesChildState extends State<HomesChild> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => QRScanner(),
+                        builder: (context) => Create(parentId: widget.parentId),
                       ),
                     );
                   },
+                  child: Icon(Icons.add),
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Colors.cyan,
+                    backgroundColor: Colors.green,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: Icon(Icons.qr_code_scanner),
                 ),
               ],
             ),
@@ -113,111 +113,111 @@ class _HomesChildState extends State<HomesChild> {
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.grey)))
-                : ListView.builder(
-                    itemCount: _items.length,
-                    itemBuilder: (context, index) {
-                      final item = _items[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Detail(item: item),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          elevation: 4,
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          child: ListTile(
-                            title: Text(item.nama,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
-                            subtitle: Text(item.keterangan,
-                                style: TextStyle(
-                                    color: Colors.black54, fontSize: 14)),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.edit, color: Colors.amber),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Edits(
-                                            item: item,
-                                            onEditSuccess: _loadItems),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.delete, color: Colors.red),
-                                  onPressed: () async {
-                                    final shouldDelete = await showDialog<bool>(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: Text('Konfirmasi'),
-                                        content: Text(
-                                            'Apakah Anda yakin ingin menghapus item ini?'),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context)
-                                                    .pop(false),
-                                            child: Text('Tidak'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(true),
-                                            child: Text(
-                                              'Iya',
-                                              style: TextStyle(
-                                                color: Colors.red,
+                : Container(
+                    decoration: BoxDecoration(
+                      color: Colors.blue[200],
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(28),
+                        topRight: Radius.circular(28),
+                      ),
+                    ),
+                    padding: EdgeInsets.only(top: 18),
+                    child: ListView.builder(
+                      itemCount: _items.length,
+                      itemBuilder: (context, index) {
+                        final item = _items[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Detail(item: item),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            elevation: 4,
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            child: ListTile(
+                              title: Text(item.nama,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
+                              subtitle: Text(item.keterangan,
+                                  style: TextStyle(
+                                      color: Colors.black54, fontSize: 14)),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.edit, color: Colors.amber),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => Edits(
+                                              item: item,
+                                              onEditSuccess: _loadItems),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete, color: Colors.red),
+                                    onPressed: () async {
+                                      final shouldDelete =
+                                          await showDialog<bool>(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: Text('Konfirmasi'),
+                                          content: Text(
+                                              'Apakah Anda yakin ingin menghapus item ini?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(false),
+                                              child: Text('Tidak'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(true),
+                                              child: Text(
+                                                'Iya',
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
+                                          ],
+                                        ),
+                                      );
 
-                                    if (shouldDelete == true) {
-                                      await DatabaseHelper()
-                                          .deleteListItem(item.id ?? 0);
-                                      setState(() {
-                                        _items.removeAt(index);
-                                      });
-                                    }
-                                  },
-                                ),
-                              ],
+                                      if (shouldDelete == true) {
+                                        await DatabaseHelper()
+                                            .deleteListItem(item.id ?? 0);
+                                        setState(() {
+                                          _items.removeAt(index);
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Create(parentId: widget.parentId),
-            ),
-          );
-        },
-        child: Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

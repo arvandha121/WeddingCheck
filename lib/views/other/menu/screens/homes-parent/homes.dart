@@ -21,16 +21,14 @@ class _HomesParentState extends State<HomesParent> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Konfirmasi Hapus'),
-          content: Text('Apakah Anda yakin ingin menghapus item ini?'),
+          content: Text('Apakah kamu yakin ingin menghapus item ini?'),
           actions: <Widget>[
             TextButton(
-              child: Text('Batal'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              child: Text('Tidak'),
+              onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: Text('Hapus', style: TextStyle(color: Colors.red)),
+              child: Text('Iya', style: TextStyle(color: Colors.red)),
               onPressed: () {
                 DatabaseHelper().deleteParentListItem(id);
                 setState(() {});
@@ -56,7 +54,7 @@ class _HomesParentState extends State<HomesParent> {
           } else if (snapshot.hasData && snapshot.data!.isEmpty) {
             return Center(
               child: Text(
-                "DATA FILE KOSONG",
+                "Data Tidak Ditemukan",
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -65,51 +63,98 @@ class _HomesParentState extends State<HomesParent> {
             );
           } else if (snapshot.hasData) {
             final parents = snapshot.data!;
-            return ListView.builder(
-              itemCount: parents.length,
-              itemBuilder: (context, index) {
-                final item = parents[index];
-                return Card(
-                  margin: EdgeInsets.all(8),
-                  elevation: 4,
-                  child: ListTile(
-                    title: Text(item.title,
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Text('Tap to see details'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit, color: Colors.orange),
-                          onPressed: () {
+            return Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "List Berkas",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: parents.length,
+                    itemBuilder: (context, index) {
+                      final item = parents[index];
+                      return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        margin: EdgeInsets.all(8),
+                        elevation: 4,
+                        child: ListTile(
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 10,
+                          ),
+                          title: Text(
+                            item.title,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 17),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 5.0,
+                                  bottom: 2.0,
+                                ),
+                                child: Text(
+                                  '${item.namapria} & ${item.namawanita}',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 4), // Adds vertical spacing
+                              Text('Ketuk untuk melihat detail')
+                            ],
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.edit, color: Colors.orange),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => EditParents(
+                                        item: item,
+                                        onEditSuccess: onEditSuccess,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.delete, color: Colors.red),
+                                onPressed: () => _confirmDelete(item.id!),
+                              ),
+                            ],
+                          ),
+                          onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => EditParents(
-                                  item: item,
-                                  onEditSuccess: onEditSuccess,
-                                ),
+                                builder: (context) =>
+                                    HomesChild(parentId: item.id!),
                               ),
                             );
                           },
                         ),
-                        IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _confirmDelete(item.id!),
-                        ),
-                      ],
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomesChild(parentId: item.id!),
-                        ),
                       );
                     },
                   ),
-                );
-              },
+                ),
+              ],
             );
           } else {
             return Center(child: CircularProgressIndicator());

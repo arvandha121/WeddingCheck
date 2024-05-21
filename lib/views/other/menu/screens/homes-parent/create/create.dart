@@ -44,12 +44,14 @@ class _CreateParentState extends State<CreateParent> {
     final TimeOfDay? startTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
+      helpText: 'Waktu Mulai',
     );
     if (startTime == null) return; // User cancelled the picker
 
     final TimeOfDay? endTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
+      helpText: 'Waktu Selesai',
     );
     if (endTime == null) return; // User cancelled the picker
 
@@ -70,6 +72,7 @@ class _CreateParentState extends State<CreateParent> {
     final TimeOfDay? startTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
+      helpText: 'Waktu Mulai',
     );
     if (startTime != null) {
       final now = DateTime.now();
@@ -132,7 +135,7 @@ class _CreateParentState extends State<CreateParent> {
                   labelText: "Title",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.person),
+                  prefixIcon: Icon(Icons.push_pin),
                 ),
                 validator: (value) =>
                     value!.isEmpty ? "Title tidak boleh kosong" : null,
@@ -144,10 +147,10 @@ class _CreateParentState extends State<CreateParent> {
                   labelText: "Nama Pria",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.group),
+                  prefixIcon: Icon(Icons.man_outlined),
                 ),
                 validator: (value) =>
-                    value!.isEmpty ? "Nama tidak boleh kosong" : null,
+                    value!.isEmpty ? "Nama pria tidak boleh kosong" : null,
               ),
               SizedBox(height: 20),
               TextFormField(
@@ -156,10 +159,10 @@ class _CreateParentState extends State<CreateParent> {
                   labelText: "Nama Wanita",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.location_city),
+                  prefixIcon: Icon(Icons.woman_outlined),
                 ),
                 validator: (value) =>
-                    value!.isEmpty ? "Nama tidak boleh kosong" : null,
+                    value!.isEmpty ? "Nama wanita tidak boleh kosong" : null,
               ),
               SizedBox(height: 20),
               TextFormField(
