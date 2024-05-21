@@ -15,35 +15,47 @@ class Splash extends StatefulWidget {
 
 class _SplashState extends State<Splash> {
   double opacityLevel = 0.0;
+  Timer? _timer1;
+  Timer? _timer2;
 
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 1), () {
-      setState(() {
-        opacityLevel = 1.0;
-      });
+    _timer1 = Timer(Duration(seconds: 1), () {
+      if (mounted) {
+        setState(() {
+          opacityLevel = 1.0;
+        });
+      }
     });
-    Timer(Duration(seconds: 4), () async {
-      // Setelah 5 detik, pindah ke route Login
-      await Provider.of<UiProvider>(context, listen: false).initStorage();
-      final bool rememberMe =
-          Provider.of<UiProvider>(context, listen: false).rememberMe;
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          transitionDuration: Duration(seconds: 2),
-          pageBuilder: (_, __, ___) =>
-              rememberMe ? const HomePage() : const Login(),
-          transitionsBuilder: (_, animation, __, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-        ),
-      );
+    _timer2 = Timer(Duration(seconds: 4), () async {
+      if (mounted) {
+        await Provider.of<UiProvider>(context, listen: false).initStorage();
+        final bool rememberMe =
+            Provider.of<UiProvider>(context, listen: false).rememberMe;
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            transitionDuration: Duration(seconds: 2),
+            pageBuilder: (_, __, ___) =>
+                rememberMe ? const HomePage() : const Login(),
+            transitionsBuilder: (_, animation, __, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
+        );
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    _timer1?.cancel();
+    _timer2?.cancel();
+    super.dispose();
   }
 
   @override
