@@ -16,6 +16,8 @@ class _QRScannerState extends State<QRScanner> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
 
+  bool isFlashOn = false;
+
   @override
   void reassemble() {
     super.reassemble();
@@ -29,6 +31,13 @@ class _QRScannerState extends State<QRScanner> {
   void dispose() {
     controller?.dispose();
     super.dispose();
+  }
+
+  void _toggleFlash() {
+    setState(() {
+      isFlashOn = !isFlashOn;
+    });
+    controller?.toggleFlash();
   }
 
   void _onQRViewCreated(QRViewController controller) {
@@ -95,16 +104,32 @@ class _QRScannerState extends State<QRScanner> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: QRView(
-        key: qrKey,
-        onQRViewCreated: _onQRViewCreated,
-        overlay: QrScannerOverlayShape(
-          borderColor: Colors.red,
-          borderRadius: 10,
-          borderLength: 30,
-          borderWidth: 10,
-          cutOutSize: MediaQuery.of(context).size.width * 0.8,
-        ),
+      body: Stack(
+        children: [
+          QRView(
+            key: qrKey,
+            onQRViewCreated: _onQRViewCreated,
+            overlay: QrScannerOverlayShape(
+              borderColor: Colors.red,
+              borderRadius: 10,
+              borderLength: 30,
+              borderWidth: 10,
+              cutOutSize: 300,
+            ),
+          ),
+          Positioned(
+            right: 10,
+            bottom: 10,
+            child: FloatingActionButton(
+              onPressed: _toggleFlash,
+              child: Icon(
+                isFlashOn ? Icons.flash_off : Icons.flash_on,
+                color: Colors.white,
+              ),
+              backgroundColor: isFlashOn ? Colors.yellow[700] : Colors.black54,
+            ),
+          ),
+        ],
       ),
     );
   }
