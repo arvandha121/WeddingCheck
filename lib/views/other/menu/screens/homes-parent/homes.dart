@@ -49,7 +49,21 @@ class _HomesParentState extends State<HomesParent> {
       body: FutureBuilder<List<ParentListItem>>(
         future: DatabaseHelper().getParent(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Error: ${snapshot.error}"));
+          } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+            return Center(
+              child: Text(
+                "DATA FILE KOSONG",
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey),
+              ),
+            );
+          } else if (snapshot.hasData) {
             final parents = snapshot.data!;
             return ListView.builder(
               itemCount: parents.length,
@@ -97,8 +111,6 @@ class _HomesParentState extends State<HomesParent> {
                 );
               },
             );
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
           } else {
             return Center(child: CircularProgressIndicator());
           }
