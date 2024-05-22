@@ -55,25 +55,25 @@ class _EditsState extends State<Edits> {
         keterangan: currentStatus ?? widget.item.keterangan,
       );
 
-      Navigator.pop(context, true);
-
       await dbHelper.updateListItem(updatedItem);
 
       // Display a Snackbar with a success message
       Get.snackbar(
-          "Success", // title
-          "Item updated successfully", // message
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          borderRadius: 20,
-          margin: EdgeInsets.all(10),
-          snackStyle: SnackStyle.FLOATING,
-          duration: Duration(seconds: 3) // Duration the Snackbar is visible
-          );
+        "Success", // title
+        "Item updated successfully", // message
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        borderRadius: 20,
+        margin: EdgeInsets.all(10),
+        snackStyle: SnackStyle.FLOATING,
+        duration: Duration(seconds: 3), // Duration the Snackbar is visible
+      );
 
       // Optionally, you can call the callback to inform any parent widgets of the update
       widget.onEditSuccess();
+
+      Navigator.pop(context, true);
     }
   }
 
@@ -82,6 +82,7 @@ class _EditsState extends State<Edits> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Item'),
+        backgroundColor: Colors.deepPurple,
       ),
       body: Padding(
         padding: EdgeInsets.all(20),
@@ -90,62 +91,42 @@ class _EditsState extends State<Edits> {
           child: ListView(
             children: <Widget>[
               SizedBox(height: 8),
-              TextFormField(
+              _buildTextField(
                 controller: nameController,
-                decoration: InputDecoration(
-                  labelText: "Nama",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.person),
-                ),
+                labelText: "Nama",
+                icon: Icons.person,
                 validator: (value) =>
                     value!.isEmpty ? "Nama tidak boleh kosong" : null,
               ),
               SizedBox(height: 20),
-              TextFormField(
+              _buildTextField(
                 controller: keluargaController,
-                decoration: InputDecoration(
-                  labelText: "Keluarga",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.group),
-                ),
+                labelText: "Keluarga",
+                icon: Icons.group,
                 validator: (value) =>
                     value!.isEmpty ? "Keluarga tidak boleh kosong" : null,
               ),
               SizedBox(height: 20),
-              TextFormField(
+              _buildTextField(
                 controller: alamatController,
-                decoration: InputDecoration(
-                  labelText: "Alamat",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.location_city),
-                ),
+                labelText: "Alamat",
+                icon: Icons.location_city,
                 validator: (value) =>
                     value!.isEmpty ? "Alamat tidak boleh kosong" : null,
               ),
               SizedBox(height: 20),
-              TextFormField(
+              _buildTextField(
                 controller: kotaController,
-                decoration: InputDecoration(
-                  labelText: "Kota",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.location_on),
-                ),
+                labelText: "Kota",
+                icon: Icons.location_on,
                 validator: (value) =>
                     value!.isEmpty ? "Kota tidak boleh kosong" : null,
               ),
               SizedBox(height: 20),
-              TextFormField(
+              _buildTextField(
                 controller: kecamatanController,
-                decoration: InputDecoration(
-                  labelText: "Kecamatan",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.map),
-                ),
+                labelText: "Kecamatan",
+                icon: Icons.map,
                 validator: (value) =>
                     value!.isEmpty ? "Kecamatan tidak boleh kosong" : null,
               ),
@@ -193,9 +174,10 @@ class _EditsState extends State<Edits> {
               ElevatedButton(
                 onPressed: updateListItem,
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.blue,
+                  primary: Colors.deepPurple,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                   textStyle:
                       TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -206,6 +188,27 @@ class _EditsState extends State<Edits> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String labelText,
+    required IconData icon,
+    required String? Function(String?) validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        prefixIcon: Icon(icon),
+        filled: true,
+        fillColor: Colors.grey[200],
+      ),
+      validator: validator,
     );
   }
 }

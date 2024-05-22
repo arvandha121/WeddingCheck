@@ -107,12 +107,16 @@ class _CreateParentState extends State<CreateParent> {
           "Success",
           "Item created successfully",
           snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
         );
       } catch (e) {
         Get.snackbar(
           "Error",
           "Failed to create item: $e",
           snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
         );
       }
     }
@@ -121,7 +125,10 @@ class _CreateParentState extends State<CreateParent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Create Files")),
+      appBar: AppBar(
+        title: Text("Create Files"),
+        backgroundColor: Colors.deepPurple,
+      ),
       body: Padding(
         padding: EdgeInsets.all(20),
         child: Form(
@@ -129,92 +136,64 @@ class _CreateParentState extends State<CreateParent> {
           child: ListView(
             children: <Widget>[
               SizedBox(height: 8),
-              TextFormField(
+              _buildTextField(
                 controller: titleController,
-                decoration: InputDecoration(
-                  labelText: "Title",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.push_pin),
-                ),
+                labelText: "Title",
+                icon: Icons.push_pin,
                 validator: (value) =>
                     value!.isEmpty ? "Title tidak boleh kosong" : null,
               ),
               SizedBox(height: 20),
-              TextFormField(
+              _buildTextField(
                 controller: namapriaController,
-                decoration: InputDecoration(
-                  labelText: "Nama Pria",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.man_outlined),
-                ),
+                labelText: "Nama Pria",
+                icon: Icons.male_outlined,
                 validator: (value) =>
                     value!.isEmpty ? "Nama pria tidak boleh kosong" : null,
               ),
               SizedBox(height: 20),
-              TextFormField(
+              _buildTextField(
                 controller: namawanitaController,
-                decoration: InputDecoration(
-                  labelText: "Nama Wanita",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.woman_outlined),
-                ),
+                labelText: "Nama Wanita",
+                icon: Icons.female_outlined,
                 validator: (value) =>
                     value!.isEmpty ? "Nama wanita tidak boleh kosong" : null,
               ),
               SizedBox(height: 20),
-              TextFormField(
+              _buildTextField(
                 controller: tanggalController,
-                decoration: InputDecoration(
-                  labelText: "Tanggal",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.calendar_today),
-                ),
+                labelText: "Tanggal",
+                icon: Icons.calendar_today,
                 validator: (value) =>
                     value!.isEmpty ? "Tanggal tidak boleh kosong" : null,
                 onTap: () => _selectDate(context, tanggalController),
-                readOnly: true, // Prevent manual editing
+                readOnly: true,
               ),
               SizedBox(height: 20),
-              TextFormField(
+              _buildTextField(
                 controller: akadController,
-                decoration: InputDecoration(
-                  labelText: "Akad (Jam Mulai - Selesai)",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.timer),
-                ),
+                labelText: "Akad (Jam Mulai - Selesai)",
+                icon: Icons.timer,
                 validator: (value) =>
                     value!.isEmpty ? "Akad tidak boleh kosong" : null,
                 onTap: () => _selectTime(context, akadController),
                 readOnly: true,
               ),
               SizedBox(height: 20),
-              TextFormField(
+              _buildTextField(
                 controller: resepsiController,
-                decoration: InputDecoration(
-                  labelText: "Resepsi (Jam Mulai - Selesai)",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.timer),
-                ),
+                labelText: "Resepsi (Jam Mulai - Selesai)",
+                icon: Icons.timer,
                 validator: (value) =>
                     value!.isEmpty ? "Resepsi tidak boleh kosong" : null,
                 onTap: () => _selectResepsiTime(context, resepsiController),
                 readOnly: true,
               ),
               SizedBox(height: 20),
-              TextFormField(
+              _buildTextField(
                 controller: lokasiController,
-                decoration: InputDecoration(
-                  labelText: "Lokasi",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  prefixIcon: Icon(Icons.map),
-                ),
+                labelText: "Lokasi",
+                icon: Icons.map,
                 validator: (value) =>
                     value!.isEmpty ? "Lokasi tidak boleh kosong" : null,
               ),
@@ -222,7 +201,7 @@ class _CreateParentState extends State<CreateParent> {
               ElevatedButton(
                 onPressed: create,
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.blue,
+                  backgroundColor: Colors.deepPurple,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -241,6 +220,31 @@ class _CreateParentState extends State<CreateParent> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String labelText,
+    required IconData icon,
+    required String? Function(String?) validator,
+    VoidCallback? onTap,
+    bool readOnly = false,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        prefixIcon: Icon(icon),
+        filled: true,
+        fillColor: Colors.grey[200],
+      ),
+      validator: validator,
+      onTap: onTap,
+      readOnly: readOnly,
     );
   }
 }

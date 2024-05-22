@@ -109,7 +109,7 @@ class DatabaseHelper {
       maps = await db.query(
         'list',
         where:
-            'nama LIKE ? OR KOTA LIKE ? OR keluarga LIKE ? OR keterangan LIKE ?',
+            'nama LIKE ? OR kota LIKE ? OR keluarga LIKE ? OR keterangan LIKE ?',
         whereArgs: ['%$query%', '%$query%', '%$query%', '%$query%'],
       );
     }
@@ -195,14 +195,34 @@ class DatabaseHelper {
       maps = await db.query(
         'list',
         where:
-            'parentId = ? AND (nama LIKE ? OR kota LIKE ? OR keluarga LIKE ? OR keterangan LIKE ?)',
-        whereArgs: [parentId, '%$query%'],
+            'parentId = ? AND (nama LIKE ? OR kota LIKE ? OR keluarga LIKE ? OR (keterangan LIKE ? AND keterangan NOT LIKE ?))',
+        whereArgs: [
+          parentId,
+          '%$query%',
+          '%$query%',
+          '%$query%',
+          '%$query%',
+          '%belum $query%'
+        ],
       );
     }
 
     return List.generate(maps.length, (i) {
       return ListItem.fromMap(maps[i]);
     });
+  }
+
+  Future<ParentListItem?> getParentItem(int id) async {
+    final db = await database;
+    List<Map<String, dynamic>> result = await db.query(
+      'parentlist',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    if (result.isNotEmpty) {
+      return ParentListItem.fromMap(result.first);
+    }
+    return null;
   }
 
   Future<void> close() async {

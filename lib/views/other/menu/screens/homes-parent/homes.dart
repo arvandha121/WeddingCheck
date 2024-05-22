@@ -71,7 +71,7 @@ class _HomesParentState extends State<HomesParent> {
                   child: Text(
                     "List Berkas",
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
@@ -96,7 +96,7 @@ class _HomesParentState extends State<HomesParent> {
                           title: Text(
                             item.title,
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 17),
+                                fontWeight: FontWeight.bold, fontSize: 18),
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,12 +109,18 @@ class _HomesParentState extends State<HomesParent> {
                                 child: Text(
                                   '${item.namapria} & ${item.namawanita}',
                                   style: TextStyle(
-                                    fontSize: 13,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 4), // Adds vertical spacing
-                              Text('Ketuk untuk melihat detail')
+                              SizedBox(height: 4),
+                              Text(
+                                'Ketuk untuk melihat detail',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.grey[600],
+                                ),
+                              )
                             ],
                           ),
                           trailing: Row(
@@ -170,8 +176,8 @@ class _HomesParentState extends State<HomesParent> {
             ),
           );
         },
-        backgroundColor: Colors.green,
-        child: Icon(Icons.add),
+        backgroundColor: Colors.deepPurple,
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }

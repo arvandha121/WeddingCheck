@@ -15,6 +15,15 @@ class MyBottomNavBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
+      backgroundColor: Colors.white,
+      selectedItemColor: Colors.deepPurple,
+      unselectedItemColor: Colors.grey,
+      selectedIconTheme: IconThemeData(color: Colors.deepPurple),
+      unselectedIconTheme: IconThemeData(color: Colors.grey),
+      showUnselectedLabels: true,
+      selectedFontSize: 14,
+      unselectedFontSize: 12,
+      type: BottomNavigationBarType.fixed,
       items: [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),

@@ -17,7 +17,7 @@ class _DetailState extends State<Detail> {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: Text("Detail Page"),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.deepPurple,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
@@ -44,9 +44,9 @@ class _DetailState extends State<Detail> {
                                   widget.item.keterangan),
                               fontSize: 16)),
                       leading: CircleAvatar(
-                        backgroundColor: Colors.blue[100],
+                        backgroundColor: Colors.deepPurple[100],
                         child: Icon(Icons.person,
-                            size: 40, color: Colors.blue[900]),
+                            size: 40, color: Colors.deepPurple[900]),
                       ),
                     ),
                     Divider(thickness: 2),
@@ -88,7 +88,7 @@ class _DetailState extends State<Detail> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          Icon(icon, color: Colors.blue[900]),
+          Icon(icon, color: Colors.deepPurple[900]),
           SizedBox(width: 10),
           Expanded(
             child: Column(
