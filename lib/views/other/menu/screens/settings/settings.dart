@@ -53,6 +53,95 @@ class _SettingsState extends State<Settings> {
     );
   }
 
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    TextEditingController _textEditingController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('Konfirmasi'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      text: 'Ketik "',
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                      children: [
+                        TextSpan(
+                          text: 'hapus semua',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                        TextSpan(
+                          text: '" untuk konfirmasi:',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _textEditingController,
+                    decoration: InputDecoration(
+                      hintText: 'Masukkan kode konfirmasi',
+                      hintStyle: TextStyle(color: Colors.grey[400]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      contentPadding: EdgeInsets.all(10),
+                    ),
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Batal'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (_textEditingController.text.toLowerCase() ==
+                        'hapus semua') {
+                      Navigator.of(context).pop();
+                      DatabaseHelper().clearAllListItems();
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Konfirmasi Gagal'),
+                            content: const Text(
+                                'Anda harus mengetik "hapus semua" untuk menghapus semua item.'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: const Text('Tutup'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  },
+                  child: const Text(
+                    'Hapus',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,32 +153,14 @@ class _SettingsState extends State<Settings> {
               color: Colors.redAccent,
               size: 40,
             ),
-            title: Text('Hapus Semua List'),
-            subtitle: Text('Menghapus semua item yang tersimpan'),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Konfirmasi'),
-                    content: const Text('Yakin untuk menghapus semua item?'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('Batal'),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          Navigator.of(context).pop();
-                          await DatabaseHelper().clearAllListItems();
-                        },
-                        child: const Text('Hapus Semua'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
+            title: Text(
+              'Hapus Semua List',
+            ),
+            subtitle: Text(
+              'Menghapus semua item yang tersimpan',
+              selectionColor: Colors.grey[600],
+            ),
+            onTap: () => _showDeleteConfirmationDialog(context),
             tileColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
