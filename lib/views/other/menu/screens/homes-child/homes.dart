@@ -93,6 +93,7 @@ class _HomesChildState extends State<HomesChild> {
   Widget _buildParentInfo() {
     return Card(
       margin: EdgeInsets.all(12),
+      color: Colors.purple[100],
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Padding(
@@ -177,28 +178,21 @@ class _HomesChildState extends State<HomesChild> {
 
   Widget _buildItemList() {
     return Expanded(
-      child: _items.isEmpty
-          ? Center(
-              child: Text(
-                "DATA KOSONG",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey,
-                ),
-              ),
-            )
-          : Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(28),
-                    topRight: Radius.circular(28),
+      child: RefreshIndicator(
+        onRefresh: _handleRefresh,
+        child: _items.isEmpty
+            ? Center(
+                child: Text(
+                  "DATA KOSONG",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
                   ),
                 ),
-                padding: EdgeInsets.only(top: 18),
+              )
+            : Padding(
+                padding: const EdgeInsets.only(top: 4.0),
                 child: ListView.builder(
                   itemCount: _items.length,
                   itemBuilder: (context, index) {
@@ -279,9 +273,11 @@ class _HomesChildState extends State<HomesChild> {
                                   if (shouldDelete == true) {
                                     await DatabaseHelper()
                                         .deleteListItem(item.id ?? 0);
-                                    setState(() {
-                                      _items.removeAt(index);
-                                    });
+                                    setState(
+                                      () {
+                                        _items.removeAt(index);
+                                      },
+                                    );
                                   }
                                 },
                               ),
@@ -293,7 +289,12 @@ class _HomesChildState extends State<HomesChild> {
                   },
                 ),
               ),
-            ),
+      ),
     );
+  }
+
+  Future<void> _handleRefresh() async {
+    // Call your method to reload data
+    _loadItems();
   }
 }

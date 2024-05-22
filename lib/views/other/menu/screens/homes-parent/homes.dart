@@ -16,23 +16,69 @@ class _HomesParentState extends State<HomesParent> {
   }
 
   void _confirmDelete(int id) {
+    TextEditingController confirmController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Konfirmasi Hapus'),
-          content: Text('Apakah kamu yakin ingin menghapus item ini?'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                      color: Colors.black, fontSize: 16), // Default text style
+                  children: <TextSpan>[
+                    TextSpan(text: 'Ketik "'),
+                    TextSpan(
+                        text: 'hapus', style: TextStyle(color: Colors.red)),
+                    TextSpan(text: '" untuk konfirmasi hapus berkas.'),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextField(
+                controller: confirmController,
+                decoration: InputDecoration(
+                  hintText: 'Masukkan kode konfirmasi',
+                  hintStyle: TextStyle(color: Colors.grey[400]),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  contentPadding: EdgeInsets.all(10),
+                ),
+              ),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
-              child: Text('Tidak'),
-              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Batal'),
+              onPressed: () => Navigator.of(context).pop(), // Close the dialog
             ),
             TextButton(
-              child: Text('Iya', style: TextStyle(color: Colors.red)),
+              child: Text('Hapus', style: TextStyle(color: Colors.red)),
               onPressed: () {
-                DatabaseHelper().deleteParentListItem(id);
-                setState(() {});
-                Navigator.of(context).pop();
+                if (confirmController.text.toLowerCase() == 'hapus') {
+                  DatabaseHelper().deleteParentListItem(id);
+                  setState(() {}); // Refresh the state to update the UI
+                  Navigator.of(context).pop(); // Close the dialog
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Kata kunci salah, masukkan "hapus" untuk mengkonfirmasi.',
+                      ),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                }
               },
             ),
           ],

@@ -111,21 +111,12 @@ class _SettingsState extends State<Settings> {
                       Navigator.of(context).pop();
                       DatabaseHelper().clearAllListItems();
                     } else {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Konfirmasi Gagal'),
-                            content: const Text(
-                                'Anda harus mengetik "hapus semua" untuk menghapus semua item.'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: const Text('Tutup'),
-                              ),
-                            ],
-                          );
-                        },
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              'Kata kunci salah, masukkan "hapus semua" untuk mengkonfirmasi.'),
+                          duration: Duration(seconds: 2),
+                        ),
                       );
                     }
                   },
