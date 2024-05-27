@@ -196,8 +196,9 @@ class _HomesParentState extends State<HomesParent> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    HomesChild(parentId: item.id!),
+                                builder: (context) => HomesChild(
+                                  parentId: item.id!,
+                                ),
                               ),
                             );
                           },

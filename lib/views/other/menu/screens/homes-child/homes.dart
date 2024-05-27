@@ -5,6 +5,7 @@ import 'package:weddingcheck/app/database/dbHelper.dart';
 import 'package:weddingcheck/app/model/listItem.dart';
 import 'package:weddingcheck/views/other/menu/screens/homes-child/detail-form/detail.dart';
 import 'package:weddingcheck/views/other/menu/screens/homes-child/edit-form/edit.dart';
+import 'package:weddingcheck/views/other/menu/screens/homes-parent/undangan/invite.dart';
 
 class HomesChild extends StatefulWidget {
   final int parentId;
@@ -279,6 +280,23 @@ class _HomesChildState extends State<HomesChild> {
                                       },
                                     );
                                   }
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.mobile_screen_share,
+                                  color: Color.fromARGB(255, 0, 242, 255),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => InvitationPage(
+                                        parentId: widget.parentId,
+                                        guestId: item.id!,
+                                      ),
+                                    ),
+                                  );
                                 },
                               ),
                             ],

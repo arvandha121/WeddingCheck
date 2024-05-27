@@ -248,4 +248,46 @@ class DatabaseHelper {
       whereArgs: [id],
     );
   }
+
+  Future<Map<String, dynamic>> getInvitationData(int parentId) async {
+    final db = await database;
+
+    // Get parent data
+    var parentResult = await db.query(
+      'parentlist',
+      where: 'id = ?',
+      whereArgs: [parentId],
+    );
+    ParentListItem? parentItem;
+    if (parentResult.isNotEmpty) {
+      parentItem = ParentListItem.fromMap(parentResult.first);
+    }
+
+    // Get children data
+    var childrenResult = await db.query(
+      'list',
+      where: 'parentId = ?',
+      whereArgs: [parentId],
+    );
+    List<ListItem> childrenItems =
+        childrenResult.map((map) => ListItem.fromMap(map)).toList();
+
+    return {
+      'parent': parentItem,
+      'children': childrenItems,
+    };
+  }
+
+  Future<ListItem?> getListItem(int id) async {
+    final db = await database;
+    List<Map<String, dynamic>> results = await db.query(
+      'list', // Assuming 'list' is the table name where ListItems are stored
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    if (results.isNotEmpty) {
+      return ListItem.fromMap(results.first);
+    }
+    return null;
+  }
 }
