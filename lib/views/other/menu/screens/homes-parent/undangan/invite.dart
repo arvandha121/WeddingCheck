@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:path_provider/path_provider.dart';
@@ -70,22 +72,6 @@ class _InvitationPageState extends State<InvitationPage> {
     return DateFormat('EEEE, dd MMMM yyyy', 'id_ID').format(dateTime);
   }
 
-  Future<void> _requestPermissions() async {
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      status = await Permission.storage.request();
-      if (!status.isGranted) {
-        print("Storage permission denied");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(
-                  'Storage permission is required to download the invitation')),
-        );
-        return;
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,12 +89,32 @@ class _InvitationPageState extends State<InvitationPage> {
                   SizedBox(height: 16),
                   _parentItem != null
                       ? _selectedFormat == 'Fisik'
-                          ? _buildPhysicalInvitationCard()
+                          ? Column(
+                              children: [
+                                _buildPhysicalInvitationCard(),
+                                SizedBox(
+                                  height: 20,
+                                ), // Spacing before the button
+                                Container(
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: ElevatedButton(
+                                    onPressed: _downloadInvitation,
+                                    child: Text('Unduh Undangan'),
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.deepPurple,
+                                      onPrimary: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
                           : Column(
                               children: [
                                 _buildDigitalInvitationCard(),
                                 SizedBox(
-                                    height: 20), // Spacing before the button
+                                  height: 18,
+                                ), // Spacing before the button
                                 Container(
                                   width: double.infinity,
                                   height: 50,
@@ -118,7 +124,6 @@ class _InvitationPageState extends State<InvitationPage> {
                                     style: ElevatedButton.styleFrom(
                                       primary: Colors.deepPurple,
                                       shape: RoundedRectangleBorder(
-                                        // Optional: Adds rounded corners
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
@@ -177,95 +182,67 @@ class _InvitationPageState extends State<InvitationPage> {
   }
 
   Widget _buildPhysicalInvitationCard() {
-    return Column(
-      children: [
-        Screenshot(
-          controller: screenshotController,
-          child: Card(
-            elevation: 5,
-            shadowColor: Colors.blueGrey,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          "Undangan Pernikahan",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.deepPurple,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          "Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan pernikahan kami:",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          "${_parentItem!.namapria} & ${_parentItem!.namawanita}",
-                          style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 16),
-                        QrImage(
-                          data: _listItem.gambar,
-                          version: QrVersions.auto,
-                          size: 200.0,
-                        ),
-                      ],
+    return Screenshot(
+      controller: screenshotController,
+      child: Card(
+        elevation: 5,
+        shadowColor: Colors.blueGrey,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      "Undangan Pernikahan",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 16),
-                  Divider(color: Colors.deepPurple),
-                  SizedBox(height: 16),
-                  _buildInfoRow(Icons.calendar_today, "Tanggal",
-                      _formatDate(_parentItem!.tanggal)),
-                  _buildInfoRow(Icons.access_time, "Akad", _parentItem!.akad),
-                  _buildInfoRow(
-                      Icons.access_time, "Resepsi", _parentItem!.resepsi),
-                  _buildInfoRow(
-                      Icons.location_on, "Lokasi", _parentItem!.lokasi),
-                  SizedBox(height: 16),
-                  Divider(color: Colors.deepPurple),
-                  // ..._childrenItems.map((item) => _buildGuestInfo(item.id!)),
-                  SizedBox(height: 1),
-                  _buildGuestInfo(_listItem.id!),
-                ],
+                    SizedBox(height: 8),
+                    Text(
+                      "Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan pernikahan kami:",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "${_parentItem!.namapria} & ${_parentItem!.namawanita}",
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 16),
+                    QrImage(
+                      data: _listItem.gambar,
+                      version: QrVersions.auto,
+                      size: 200.0,
+                    ),
+                  ],
+                ),
               ),
-            ),
+              SizedBox(height: 16),
+              Divider(color: Colors.deepPurple),
+              SizedBox(height: 16),
+              _buildInfoRow(Icons.calendar_today, "Tanggal",
+                  _formatDate(_parentItem!.tanggal)),
+              _buildInfoRow(Icons.access_time, "Akad", _parentItem!.akad),
+              _buildInfoRow(Icons.access_time, "Resepsi", _parentItem!.resepsi),
+              _buildInfoRow(Icons.location_on, "Lokasi", _parentItem!.lokasi),
+              SizedBox(height: 16),
+              Divider(color: Colors.deepPurple),
+              SizedBox(height: 1),
+              _buildGuestInfo(widget.guestId),
+            ],
           ),
         ),
-        SizedBox(height: 16),
-        Container(
-          width: double.infinity,
-          height: 50,
-          child: ElevatedButton(
-            onPressed: () {
-              if (_childrenItems.isNotEmpty) {
-                _downloadInvitation(
-                    _childrenItems.first); // Example: using the first item
-              }
-            },
-            child: Text('Unduh Undangan'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.deepPurple,
-              shape: RoundedRectangleBorder(
-                // Optional: Adds rounded corners
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-          ),
-        )
-      ],
+      ),
     );
   }
 
@@ -415,36 +392,93 @@ class _InvitationPageState extends State<InvitationPage> {
     );
   }
 
-  Future<void> _downloadInvitation(ListItem item) async {
-    await _requestPermissions();
+  Future<void> checkPermissions() async {
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      var result = await Permission.storage.request();
+      if (!result.isGranted) {
+        // Handle the case when permission is denied
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+                  'Storage permission is required to download the invitation')),
+        );
+      }
+    }
+  }
 
-    // Use the application's documents directory for both Android and iOS
-    Directory directory = await getApplicationDocumentsDirectory();
-
-    // Ensure the directory exists
-    if (!await directory.exists()) {
-      await directory.create(recursive: true);
+  Future<void> _downloadInvitation() async {
+    // Check and request storage permission
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      status = await Permission.storage.request();
     }
 
-    // Define the file name and path
-    String fileName = item.nama.replaceAll(' ', '') + '-invitation.png';
-    final path = '${directory.path}/$fileName';
-
-    // Capture and save the screenshot
-    try {
-      await screenshotController.captureAndSave(directory.path,
-          fileName: fileName);
-      print("File saved: $path");
+    if (status.isGranted) {
+      // Capture the screenshot only if permissions are granted
+      screenshotController.capture().then((Uint8List? image) {
+        if (image != null) {
+          saveScreenshot(image);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to capture the screenshot')),
+          );
+        }
+      }).catchError((error) {
+        print("Error capturing screenshot: $error");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error capturing the screenshot')),
+        );
+      });
+    } else {
+      // Handle the case when permission is denied
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Undangan berhasil disimpan di $path')),
-      );
-    } catch (e) {
-      print("Error saving file: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal menyimpan undangan: $e')),
+        SnackBar(
+            content: Text(
+                'Storage permission is required to download the invitation')),
       );
     }
   }
+
+  Future saveScreenshot(Uint8List bytes) async {
+    final time = DateTime.now()
+        .toIso8601String()
+        .replaceAll('.', '-')
+        .replaceAll(':', '-');
+    final name = "Undangan-$time";
+    await ImageGallerySaver.saveImage(bytes, name: name);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Invitation downloaded to your device!')),
+    );
+  }
+
+  // Future<void> _downloadInvitation() async {
+  //   var status = await Permission.storage.status;
+  //   if (!status.isGranted) {
+  //     await Permission.storage.request();
+  //   }
+
+  //   if (await Permission.storage.isGranted) {
+  //     final directory = (await getApplicationDocumentsDirectory()).path;
+  //     final imagePath = await screenshotController.captureAndSave(directory,
+  //         fileName: "invitation.png");
+  //     if (imagePath != null) {
+  //       print("Invitation saved at $imagePath");
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Invitation downloaded to your device!')),
+  //       );
+  //     } else {
+  //       print("Failed to download invitation");
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Failed to download the invitation')),
+  //       );
+  //     }
+  //   } else {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Storage permission denied')),
+  //     );
+  //   }
+  // }
 
   void _shareInvitation() async {
     final directory =
@@ -453,11 +487,9 @@ class _InvitationPageState extends State<InvitationPage> {
         fileName: "invitation.png");
 
     if (imagePath != null) {
-      await Share.shareFiles(
-        [imagePath],
-        text:
-            'Undangan Pernikahan: ${_parentItem!.namapria} & ${_parentItem!.namawanita}',
-      );
+      await Share.shareFiles([imagePath],
+          text:
+              'Anda diundang ke Pernikahan ${_parentItem!.namapria} & ${_parentItem!.namawanita}, yang akan berlangsung pada ${_formatDate(_parentItem!.tanggal)} di ${_parentItem!.lokasi}.\nKami berharap Anda dapat bergabung dalam perayaan cinta dan kebahagiaan kami.');
     } else {
       print("Failed to capture screenshot");
       ScaffoldMessenger.of(context).showSnackBar(
