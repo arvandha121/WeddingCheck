@@ -37,7 +37,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     Color textColor = isDarkMode ? Colors.black : Colors.white;
-    Color fillColor = isDarkMode ? Colors.white : Colors.black87;
+    Color fillColor = isDarkMode ? Colors.blue : Colors.blue;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
@@ -65,7 +65,7 @@ class _LoginState extends State<Login> {
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
-                          color: textColor,
+                          color: Colors.black,
                         ),
                       ),
                       SizedBox(
@@ -150,12 +150,11 @@ class _LoginState extends State<Login> {
                                 if (states.contains(MaterialState.selected)) {
                                   return fillColor; // Use appropriate color for dark mode
                                 }
-                                return fillColor
-                                    .withOpacity(0.6); // Slightly transparent
+                                return fillColor.withOpacity(0.9);
                               }),
                               checkColor: isDarkMode
-                                  ? Colors.black
-                                  : Colors.black, // color of tick Mark
+                                  ? Colors.white
+                                  : Colors.white, // color of tick Mark
                             ),
                             Text(
                               'remember me?',

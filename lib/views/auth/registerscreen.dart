@@ -87,7 +87,7 @@ class _RegisterState extends State<Register> {
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
-                          color: textColor,
+                          color: Colors.black,
                         ),
                       ),
                       SizedBox(

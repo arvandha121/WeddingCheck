@@ -61,6 +61,7 @@ class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: AnimatedOpacity(
         duration: Duration(seconds: 2),
         opacity: opacityLevel,
