@@ -34,7 +34,7 @@ class _SettingsState extends State<Settings> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Splash(),
+                      builder: (context) => const Splash(),
                     ),
                   );
                 },
@@ -53,7 +53,7 @@ class _SettingsState extends State<Settings> {
     );
   }
 
-  void _showDeleteConfirmationDialog(BuildContext context) {
+  void _showDeleteConfirmationDialog(BuildContext context, Color textColor) {
     TextEditingController _textEditingController = TextEditingController();
     showDialog(
       context: context,
@@ -69,7 +69,7 @@ class _SettingsState extends State<Settings> {
                   RichText(
                     text: TextSpan(
                       text: 'Ketik "',
-                      style: TextStyle(color: Colors.black, fontSize: 16),
+                      style: TextStyle(color: textColor, fontSize: 16),
                       children: [
                         TextSpan(
                           text: 'hapus semua',
@@ -77,7 +77,7 @@ class _SettingsState extends State<Settings> {
                         ),
                         TextSpan(
                           text: '" untuk konfirmasi:',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: textColor),
                         ),
                       ],
                     ),
@@ -115,7 +115,7 @@ class _SettingsState extends State<Settings> {
                         SnackBar(
                           content: Text(
                               'Kata kunci salah, masukkan "hapus semua" untuk mengkonfirmasi.'),
-                          duration: Duration(seconds: 2),
+                          duration: const Duration(seconds: 2),
                         ),
                       );
                     }
@@ -135,29 +135,33 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    Color textColor = isDarkMode ? Colors.white : Colors.black;
     return Scaffold(
       body: ListView(
         children: [
+          SwitchListTile(
+            title: Text('Dark Mode'),
+            value: Provider.of<UiProvider>(context).darkMode,
+            onChanged: (bool value) {
+              Provider.of<UiProvider>(context, listen: false).toggleDarkMode();
+            },
+          ),
           ListTile(
             leading: Icon(
               Icons.delete_forever,
               color: Colors.redAccent,
               size: 40,
             ),
-            title: Text(
-              'Hapus Semua List',
-            ),
-            subtitle: Text(
-              'Menghapus semua item yang tersimpan',
-              selectionColor: Colors.grey[600],
-            ),
-            onTap: () => _showDeleteConfirmationDialog(context),
-            tileColor: Colors.white,
+            title: Text('Hapus Semua List'),
+            subtitle: Text('Menghapus semua item yang tersimpan'),
+            onTap: () => _showDeleteConfirmationDialog(context, textColor),
+            tileColor: Theme.of(context).cardColor, // Adjusted for theme
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          Divider(),
+          const Divider(),
           ListTile(
             leading: Icon(
               Icons.exit_to_app,
@@ -167,7 +171,7 @@ class _SettingsState extends State<Settings> {
             title: Text('Logout'),
             subtitle: Text('Keluar dari akun Anda'),
             onTap: _confirmLogout,
-            tileColor: Colors.white,
+            tileColor: Theme.of(context).cardColor, // Adjusted for theme
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),

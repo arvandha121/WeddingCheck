@@ -58,6 +58,8 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    Color textColor = isDarkMode ? Colors.black : Colors.white;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
@@ -83,7 +85,10 @@ class _RegisterState extends State<Register> {
                       Text(
                         "REGISTER",
                         style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold),
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
                       ),
                       SizedBox(
                         height: 35,
@@ -108,7 +113,7 @@ class _RegisterState extends State<Register> {
                           ),
                           prefixIcon: Icon(Icons.person),
                           filled: true, // Set to true to enable filling color
-                          fillColor: Colors.white.withOpacity(0.8),
+                          fillColor: textColor.withOpacity(0.8),
                         ),
                       ),
                       SizedBox(
@@ -147,7 +152,7 @@ class _RegisterState extends State<Register> {
                           ),
                           prefixIcon: Icon(Icons.vpn_key),
                           filled: true, // Set to true to enable filling color
-                          fillColor: Colors.white.withOpacity(0.8),
+                          fillColor: textColor.withOpacity(0.8),
                         ),
                         textInputAction: TextInputAction.next,
                         obscureText: isHidden1,
@@ -191,7 +196,7 @@ class _RegisterState extends State<Register> {
                           ),
                           prefixIcon: Icon(Icons.lock),
                           filled: true, // Set to true to enable filling color
-                          fillColor: Colors.white.withOpacity(0.8),
+                          fillColor: textColor.withOpacity(0.8),
                         ),
                         textInputAction: TextInputAction.done,
                         obscureText: isHidden2,
@@ -236,7 +241,12 @@ class _RegisterState extends State<Register> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text("Already have an account?"),
+                          const Text(
+                            "Already have an account?",
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
                           TextButton(
                             onPressed: () {
                               Navigator.pushReplacement(

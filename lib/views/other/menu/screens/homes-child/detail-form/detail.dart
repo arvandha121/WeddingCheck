@@ -13,6 +13,10 @@ class Detail extends StatefulWidget {
 class _DetailState extends State<Detail> {
   @override
   Widget build(BuildContext context) {
+    // Determine if the theme is dark
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    // Set QR code colors based on the theme
+    Color qrForegroundColor = isDarkMode ? Colors.white : Colors.black;
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -61,6 +65,8 @@ class _DetailState extends State<Detail> {
                         data: widget.item.gambar,
                         version: QrVersions.auto,
                         size: 200.0,
+                        // backgroundColor: qrBackgroundColor,
+                        foregroundColor: qrForegroundColor,
                       ),
                     ),
                   ],

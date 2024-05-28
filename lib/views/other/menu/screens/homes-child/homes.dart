@@ -76,6 +76,8 @@ class _HomesChildState extends State<HomesChild> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    Color textColor = isDarkMode ? Colors.white : Colors.black;
     return Scaffold(
       appBar: AppBar(
         title: Text("List Tamu"),
@@ -85,7 +87,7 @@ class _HomesChildState extends State<HomesChild> {
         children: [
           if (_parentData != null) _buildParentInfo(),
           _buildSearchBar(),
-          _buildItemList(),
+          _buildItemList(textColor),
         ],
       ),
     );
@@ -177,7 +179,7 @@ class _HomesChildState extends State<HomesChild> {
     );
   }
 
-  Widget _buildItemList() {
+  Widget _buildItemList(Color textColor) {
     return Expanded(
       child: RefreshIndicator(
         onRefresh: _handleRefresh,
@@ -217,14 +219,13 @@ class _HomesChildState extends State<HomesChild> {
                           title: Text(
                             item.nama,
                             style: TextStyle(
-                              color: Colors.black,
+                              color: textColor,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           subtitle: Text(item.keterangan,
-                              style: TextStyle(
-                                  color: Colors.black54, fontSize: 14)),
+                              style: TextStyle(color: textColor, fontSize: 14)),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [

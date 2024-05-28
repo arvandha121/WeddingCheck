@@ -206,7 +206,6 @@ class _EditsState extends State<Edits> {
         ),
         prefixIcon: Icon(icon),
         filled: true,
-        fillColor: Colors.grey[200],
       ),
       validator: validator,
     );

@@ -240,7 +240,6 @@ class _CreateParentState extends State<CreateParent> {
         ),
         prefixIcon: Icon(icon),
         filled: true,
-        fillColor: Colors.grey[200],
       ),
       validator: validator,
       onTap: onTap,

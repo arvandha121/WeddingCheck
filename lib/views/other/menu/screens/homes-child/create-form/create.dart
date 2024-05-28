@@ -64,7 +64,6 @@ class _CreateState extends State<Create> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Tambah Data"),
         backgroundColor: Colors.deepPurple,
@@ -150,7 +149,6 @@ class _CreateState extends State<Create> {
         ),
         prefixIcon: Icon(icon),
         filled: true,
-        fillColor: Colors.grey[200],
       ),
       validator: validator,
     );

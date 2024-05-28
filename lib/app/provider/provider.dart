@@ -11,12 +11,21 @@ class UiProvider extends ChangeNotifier {
   bool _rememberMe = false;
   bool get rememberMe => _rememberMe;
 
+  bool _darkMode = false;
+  bool get darkMode => _darkMode;
+
   late SharedPreferences storage;
 
   // Method to check and uncheck remember me
   // we need to do it using Provider state management
   toggleCheck() {
     _isChecked = !_isChecked;
+    notifyListeners();
+  }
+
+  void toggleDarkMode() {
+    _darkMode = !_darkMode;
+    storage.setBool("darkMode", _darkMode);
     notifyListeners();
   }
 
@@ -46,5 +55,7 @@ class UiProvider extends ChangeNotifier {
     storage = await SharedPreferences.getInstance();
     // get the value of remember me
     _rememberMe = storage.getBool("rememberMe") ?? false;
+    _darkMode = storage.getBool("darkMode") ?? false;
+    notifyListeners();
   }
 }

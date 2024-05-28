@@ -35,6 +35,9 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    Color textColor = isDarkMode ? Colors.black : Colors.white;
+    Color fillColor = isDarkMode ? Colors.white : Colors.black87;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
@@ -60,7 +63,10 @@ class _LoginState extends State<Login> {
                       Text(
                         "LOGIN",
                         style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold),
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
                       ),
                       SizedBox(
                         height: 35,
@@ -83,7 +89,7 @@ class _LoginState extends State<Login> {
                           ),
                           prefixIcon: Icon(Icons.person),
                           filled: true, // Set to true to enable filling color
-                          fillColor: Colors.white.withOpacity(0.8),
+                          fillColor: textColor.withOpacity(0.8),
                         ),
                       ),
                       SizedBox(
@@ -120,7 +126,7 @@ class _LoginState extends State<Login> {
                           ),
                           prefixIcon: Icon(Icons.vpn_key),
                           filled: true, // Set to true to enable filling color
-                          fillColor: Colors.white.withOpacity(0.8),
+                          fillColor: textColor.withOpacity(0.8),
                         ),
                         textInputAction: TextInputAction.done,
                         obscureText: isHidden,
@@ -138,6 +144,18 @@ class _LoginState extends State<Login> {
                             Checkbox(
                               value: notifier.isChecked,
                               onChanged: (value) => notifier.toggleCheck(),
+                              fillColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                      (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.selected)) {
+                                  return fillColor; // Use appropriate color for dark mode
+                                }
+                                return fillColor
+                                    .withOpacity(0.6); // Slightly transparent
+                              }),
+                              checkColor: isDarkMode
+                                  ? Colors.black
+                                  : Colors.black, // color of tick Mark
                             ),
                             Text(
                               'remember me?',

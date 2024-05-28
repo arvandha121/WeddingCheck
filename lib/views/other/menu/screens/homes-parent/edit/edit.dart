@@ -253,7 +253,6 @@ class _EditParentsState extends State<EditParents> {
         ),
         prefixIcon: Icon(icon),
         filled: true,
-        fillColor: Colors.grey[200],
       ),
       validator: validator,
       onTap: onTap,

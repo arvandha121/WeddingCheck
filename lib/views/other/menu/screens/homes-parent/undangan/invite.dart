@@ -74,6 +74,12 @@ class _InvitationPageState extends State<InvitationPage> {
 
   @override
   Widget build(BuildContext context) {
+    Color isDarkMode = Theme.of(context).brightness == Brightness.dark
+        ? Colors.yellow
+        : Colors.deepPurple;
+    bool isDarkModes = Theme.of(context).brightness == Brightness.dark;
+    Color textColor = isDarkModes ? Colors.black : Colors.black;
+    Color qrForegroundColor = isDarkModes ? Colors.white : Colors.black;
     return Scaffold(
       appBar: AppBar(
         title: Text('Undangan Pernikahan'),
@@ -91,7 +97,11 @@ class _InvitationPageState extends State<InvitationPage> {
                       ? _selectedFormat == 'Fisik'
                           ? Column(
                               children: [
-                                _buildPhysicalInvitationCard(),
+                                _buildPhysicalInvitationCard(
+                                  isDarkMode,
+                                  textColor,
+                                  qrForegroundColor,
+                                ),
                                 SizedBox(
                                   height: 20,
                                 ), // Spacing before the button
@@ -111,7 +121,8 @@ class _InvitationPageState extends State<InvitationPage> {
                             )
                           : Column(
                               children: [
-                                _buildDigitalInvitationCard(),
+                                _buildDigitalInvitationCard(
+                                    isDarkMode, qrForegroundColor),
                                 SizedBox(
                                   height: 18,
                                 ), // Spacing before the button
@@ -181,7 +192,8 @@ class _InvitationPageState extends State<InvitationPage> {
     );
   }
 
-  Widget _buildPhysicalInvitationCard() {
+  Widget _buildPhysicalInvitationCard(
+      Color isDarkMode, Color textColor, Color qrForegroundColor) {
     return Screenshot(
       controller: screenshotController,
       child: Card(
@@ -203,7 +215,7 @@ class _InvitationPageState extends State<InvitationPage> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.deepPurple,
+                        color: isDarkMode,
                       ),
                     ),
                     SizedBox(height: 8),
@@ -223,6 +235,7 @@ class _InvitationPageState extends State<InvitationPage> {
                       data: _listItem.gambar,
                       version: QrVersions.auto,
                       size: 200.0,
+                      foregroundColor: qrForegroundColor,
                     ),
                   ],
                 ),
@@ -231,14 +244,17 @@ class _InvitationPageState extends State<InvitationPage> {
               Divider(color: Colors.deepPurple),
               SizedBox(height: 16),
               _buildInfoRow(Icons.calendar_today, "Tanggal",
-                  _formatDate(_parentItem!.tanggal)),
-              _buildInfoRow(Icons.access_time, "Akad", _parentItem!.akad),
-              _buildInfoRow(Icons.access_time, "Resepsi", _parentItem!.resepsi),
-              _buildInfoRow(Icons.location_on, "Lokasi", _parentItem!.lokasi),
+                  _formatDate(_parentItem!.tanggal), isDarkMode),
+              _buildInfoRow(
+                  Icons.access_time, "Akad", _parentItem!.akad, isDarkMode),
+              _buildInfoRow(Icons.access_time, "Resepsi", _parentItem!.resepsi,
+                  isDarkMode),
+              _buildInfoRow(
+                  Icons.location_on, "Lokasi", _parentItem!.lokasi, isDarkMode),
               SizedBox(height: 16),
               Divider(color: Colors.deepPurple),
               SizedBox(height: 1),
-              _buildGuestInfo(widget.guestId),
+              _buildGuestInfo(widget.guestId, isDarkMode, textColor),
             ],
           ),
         ),
@@ -246,7 +262,8 @@ class _InvitationPageState extends State<InvitationPage> {
     );
   }
 
-  Widget _buildDigitalInvitationCard() {
+  Widget _buildDigitalInvitationCard(
+      Color isDarkMode, Color qrForegroundColor) {
     return Screenshot(
       controller: screenshotController,
       child: Card(
@@ -268,7 +285,7 @@ class _InvitationPageState extends State<InvitationPage> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.deepPurple,
+                        color: isDarkMode,
                       ),
                     ),
                     SizedBox(height: 8),
@@ -288,6 +305,7 @@ class _InvitationPageState extends State<InvitationPage> {
                       data: _listItem.gambar,
                       version: QrVersions.auto,
                       size: 200.0,
+                      foregroundColor: qrForegroundColor,
                     ),
                   ],
                 ),
@@ -296,10 +314,13 @@ class _InvitationPageState extends State<InvitationPage> {
               Divider(color: Colors.deepPurple),
               SizedBox(height: 16),
               _buildInfoRow(Icons.calendar_today, "Tanggal",
-                  _formatDate(_parentItem!.tanggal)),
-              _buildInfoRow(Icons.access_time, "Akad", _parentItem!.akad),
-              _buildInfoRow(Icons.access_time, "Resepsi", _parentItem!.resepsi),
-              _buildInfoRow(Icons.location_on, "Lokasi", _parentItem!.lokasi),
+                  _formatDate(_parentItem!.tanggal), isDarkMode),
+              _buildInfoRow(
+                  Icons.access_time, "Akad", _parentItem!.akad, isDarkMode),
+              _buildInfoRow(Icons.access_time, "Resepsi", _parentItem!.resepsi,
+                  isDarkMode),
+              _buildInfoRow(
+                  Icons.location_on, "Lokasi", _parentItem!.lokasi, isDarkMode),
               SizedBox(height: 16),
             ],
           ),
@@ -308,12 +329,13 @@ class _InvitationPageState extends State<InvitationPage> {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
+  Widget _buildInfoRow(
+      IconData icon, String label, String value, Color isDarkMode) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         children: [
-          Icon(icon, color: Colors.deepPurple),
+          Icon(icon, color: isDarkMode),
           SizedBox(width: 10),
           Text(
             "$label: ",
@@ -330,14 +352,15 @@ class _InvitationPageState extends State<InvitationPage> {
     );
   }
 
-  Widget _buildGuestInfo(int id) {
+  Widget _buildGuestInfo(int id, Color isDarkMode, Color textColor) {
     // Assuming _childrenItems is a list of ListItem and contains all necessary guest information
     ListItem? guestInfo = _childrenItems.firstWhere(
       (item) => item.id == id,
     );
 
     if (guestInfo == null) {
-      return Text('Guest information is not available');
+      return Text('Guest information is not available',
+          style: TextStyle(color: textColor));
     }
 
     return Padding(
@@ -370,20 +393,21 @@ class _InvitationPageState extends State<InvitationPage> {
             SizedBox(height: 4),
             Text(
               guestInfo.nama,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
             ),
             SizedBox(height: 8),
             Text(
               "${guestInfo.kota}, ${guestInfo.alamat}",
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16, color: textColor),
             ),
             Text(
               "Kecamatan ${guestInfo.kecamatan}",
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16, color: textColor),
             ),
             Text(
               "Keluarga bpk/ibu ${guestInfo.keluarga ?? 'Tidak tersedia'}",
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16, color: textColor),
             ),
             SizedBox(height: 10),
           ],
@@ -451,34 +475,6 @@ class _InvitationPageState extends State<InvitationPage> {
       SnackBar(content: Text('Invitation downloaded to your device!')),
     );
   }
-
-  // Future<void> _downloadInvitation() async {
-  //   var status = await Permission.storage.status;
-  //   if (!status.isGranted) {
-  //     await Permission.storage.request();
-  //   }
-
-  //   if (await Permission.storage.isGranted) {
-  //     final directory = (await getApplicationDocumentsDirectory()).path;
-  //     final imagePath = await screenshotController.captureAndSave(directory,
-  //         fileName: "invitation.png");
-  //     if (imagePath != null) {
-  //       print("Invitation saved at $imagePath");
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Invitation downloaded to your device!')),
-  //       );
-  //     } else {
-  //       print("Failed to download invitation");
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Failed to download the invitation')),
-  //       );
-  //     }
-  //   } else {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Storage permission denied')),
-  //     );
-  //   }
-  // }
 
   void _shareInvitation() async {
     final directory =

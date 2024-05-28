@@ -26,6 +26,27 @@ class MyApp extends StatelessWidget {
         ) {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              // Light theme settings
+              brightness: Brightness.light,
+              primaryColor: Colors.blue,
+              scaffoldBackgroundColor: Colors.white,
+              textTheme: TextTheme(
+                bodyText1: TextStyle(color: Colors.black),
+                bodyText2: TextStyle(color: Colors.black),
+              ),
+            ),
+            darkTheme: ThemeData(
+              // Dark theme settings
+              brightness: Brightness.dark,
+              primaryColor: Colors.blueGrey,
+              scaffoldBackgroundColor: Colors.black,
+              textTheme: TextTheme(
+                bodyText1: TextStyle(color: Colors.white),
+                bodyText2: TextStyle(color: Colors.white),
+              ),
+            ),
+            themeMode: notifier.darkMode ? ThemeMode.dark : ThemeMode.light,
             // if rememberme is true goto home and not show me login screen, otherwise go to login
             home: notifier.rememberMe ? const HomePage() : const Splash(),
           );

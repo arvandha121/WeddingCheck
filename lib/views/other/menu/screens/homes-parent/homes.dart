@@ -15,9 +15,8 @@ class _HomesParentState extends State<HomesParent> {
     setState(() {});
   }
 
-  void _confirmDelete(int id) {
+  void _confirmDelete(int id, Color textColor) {
     TextEditingController confirmController = TextEditingController();
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -29,7 +28,7 @@ class _HomesParentState extends State<HomesParent> {
               RichText(
                 text: TextSpan(
                   style: TextStyle(
-                      color: Colors.black, fontSize: 16), // Default text style
+                      color: textColor, fontSize: 16), // Default text style
                   children: <TextSpan>[
                     TextSpan(text: 'Ketik "'),
                     TextSpan(
@@ -89,6 +88,8 @@ class _HomesParentState extends State<HomesParent> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    Color textColor = isDarkMode ? Colors.white : Colors.black;
     return Scaffold(
       body: FutureBuilder<List<ParentListItem>>(
         future: DatabaseHelper().getParent(),
@@ -119,7 +120,6 @@ class _HomesParentState extends State<HomesParent> {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
                     ),
                   ),
                 ),
@@ -188,7 +188,8 @@ class _HomesParentState extends State<HomesParent> {
                               ),
                               IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () => _confirmDelete(item.id!),
+                                onPressed: () =>
+                                    _confirmDelete(item.id!, textColor),
                               ),
                             ],
                           ),
