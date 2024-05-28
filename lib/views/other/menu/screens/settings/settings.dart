@@ -87,13 +87,13 @@ class _SettingsState extends State<Settings> {
                     controller: _textEditingController,
                     decoration: InputDecoration(
                       hintText: 'Masukkan kode konfirmasi',
-                      hintStyle: TextStyle(color: Colors.grey[400]),
+                      hintStyle: TextStyle(color: textColor),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: Colors.grey[100],
+                      fillColor: Color.fromARGB(124, 245, 245, 245),
                       contentPadding: EdgeInsets.all(10),
                     ),
                   ),

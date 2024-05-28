@@ -50,7 +50,7 @@ class _HomesParentState extends State<HomesParent> {
                     borderSide: BorderSide.none,
                   ),
                   filled: true,
-                  fillColor: Colors.grey[100],
+                  fillColor: Colors.black38,
                   contentPadding: EdgeInsets.all(10),
                 ),
               ),
