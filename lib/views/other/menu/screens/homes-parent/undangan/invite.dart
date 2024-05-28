@@ -10,8 +10,9 @@ import 'package:weddingcheck/app/database/dbHelper.dart';
 import 'package:weddingcheck/app/model/listItem.dart';
 import 'package:weddingcheck/app/model/parentListItem.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:share_plus/share_plus.dart'; // Paket untuk berbagi
-import 'package:permission_handler/permission_handler.dart'; // Paket untuk izin
+import 'package:share_plus/share_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class InvitationPage extends StatefulWidget {
   final int parentId;
@@ -214,35 +215,41 @@ class _InvitationPageState extends State<InvitationPage> {
                       "Undangan Pernikahan",
                       style: TextStyle(
                         fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w900,
                         color: isDarkMode,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: 10),
                     Text(
                       "Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan pernikahan kami:",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16),
+                      style: GoogleFonts.lato(
+                        textStyle: TextStyle(fontSize: 16),
+                      ),
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: 18),
                     Text(
                       "${_parentItem!.namapria} & ${_parentItem!.namawanita}",
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.josefinSans(
+                        textStyle: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w900,
+                            fontStyle: FontStyle.italic),
+                      ),
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 12),
                     QrImage(
                       data: _listItem.gambar,
                       version: QrVersions.auto,
-                      size: 200.0,
+                      size: 165.0,
                       foregroundColor: qrForegroundColor,
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 8),
               Divider(color: Colors.deepPurple),
-              SizedBox(height: 16),
+              SizedBox(height: 8),
               _buildInfoRow(Icons.calendar_today, "Tanggal",
                   _formatDate(_parentItem!.tanggal), isDarkMode),
               _buildInfoRow(
@@ -251,7 +258,7 @@ class _InvitationPageState extends State<InvitationPage> {
                   isDarkMode),
               _buildInfoRow(
                   Icons.location_on, "Lokasi", _parentItem!.lokasi, isDarkMode),
-              SizedBox(height: 16),
+              SizedBox(height: 8),
               Divider(color: Colors.deepPurple),
               SizedBox(height: 1),
               _buildGuestInfo(widget.guestId, isDarkMode, textColor),
@@ -284,35 +291,41 @@ class _InvitationPageState extends State<InvitationPage> {
                       "Undangan Pernikahan",
                       style: TextStyle(
                         fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w900,
                         color: isDarkMode,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: 10),
                     Text(
                       "Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan pernikahan kami:",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16),
+                      style: GoogleFonts.lato(
+                        textStyle: TextStyle(fontSize: 16),
+                      ),
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: 18),
                     Text(
                       "${_parentItem!.namapria} & ${_parentItem!.namawanita}",
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.josefinSans(
+                        textStyle: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w900,
+                            fontStyle: FontStyle.italic),
+                      ),
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 12),
                     QrImage(
                       data: _listItem.gambar,
                       version: QrVersions.auto,
-                      size: 200.0,
+                      size: 180.0,
                       foregroundColor: qrForegroundColor,
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 8),
               Divider(color: Colors.deepPurple),
-              SizedBox(height: 16),
+              SizedBox(height: 8),
               _buildInfoRow(Icons.calendar_today, "Tanggal",
                   _formatDate(_parentItem!.tanggal), isDarkMode),
               _buildInfoRow(
@@ -321,7 +334,7 @@ class _InvitationPageState extends State<InvitationPage> {
                   isDarkMode),
               _buildInfoRow(
                   Icons.location_on, "Lokasi", _parentItem!.lokasi, isDarkMode),
-              SizedBox(height: 16),
+              SizedBox(height: 8),
             ],
           ),
         ),
@@ -339,12 +352,12 @@ class _InvitationPageState extends State<InvitationPage> {
           SizedBox(width: 10),
           Text(
             "$label: ",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 16),
+              style: GoogleFonts.lato(fontSize: 16),
             ),
           ),
         ],
@@ -385,29 +398,29 @@ class _InvitationPageState extends State<InvitationPage> {
           children: [
             Text(
               'Yth.',
-              style: TextStyle(
-                  fontSize: 18,
+              style: GoogleFonts.lato(
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.deepPurple),
             ),
             SizedBox(height: 4),
             Text(
               guestInfo.nama,
-              style: TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+              style: GoogleFonts.lato(
+                  fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
             ),
             SizedBox(height: 8),
             Text(
               "${guestInfo.kota}, ${guestInfo.alamat}",
-              style: TextStyle(fontSize: 16, color: textColor),
+              style: GoogleFonts.lato(fontSize: 14, color: textColor),
             ),
             Text(
               "Kecamatan ${guestInfo.kecamatan}",
-              style: TextStyle(fontSize: 16, color: textColor),
+              style: GoogleFonts.lato(fontSize: 14, color: textColor),
             ),
             Text(
               "Keluarga bpk/ibu ${guestInfo.keluarga ?? 'Tidak tersedia'}",
-              style: TextStyle(fontSize: 16, color: textColor),
+              style: GoogleFonts.lato(fontSize: 14, color: textColor),
             ),
             SizedBox(height: 10),
           ],

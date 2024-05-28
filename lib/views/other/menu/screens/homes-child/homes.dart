@@ -157,13 +157,16 @@ class _HomesChildState extends State<HomesChild> {
           ),
           SizedBox(width: 8),
           ElevatedButton(
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              final result = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => Create(parentId: widget.parentId),
                 ),
               );
+              if (result == true) {
+                _loadItems();
+              }
             },
             child: Icon(Icons.add, color: Colors.white),
             style: ElevatedButton.styleFrom(
@@ -224,8 +227,15 @@ class _HomesChildState extends State<HomesChild> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          subtitle: Text(item.keterangan,
-                              style: TextStyle(color: textColor, fontSize: 14)),
+                          subtitle: Text(
+                            item.keterangan,
+                            style: TextStyle(
+                              color: item.keterangan == 'hadir'
+                                  ? Colors.green
+                                  : Colors.red,
+                              fontSize: 14,
+                            ),
+                          ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [

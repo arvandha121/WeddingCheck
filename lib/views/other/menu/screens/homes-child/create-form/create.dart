@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:weddingcheck/app/database/dbHelper.dart';
@@ -22,11 +24,12 @@ class _CreateState extends State<Create> {
   final keteranganController = TextEditingController(text: "belum hadir");
 
   final DatabaseHelper list = DatabaseHelper();
+  final Set<String> generatedCodes = {};
 
   void create() async {
     if (formKey.currentState!.validate()) {
       // Set the gambarController text to name and keluarga values
-      gambarController.text = "${nameController.text}";
+      gambarController.text = "${nameController.text}${_generateRandomCode()}";
 
       try {
         await list.insertListItem(
@@ -59,6 +62,16 @@ class _CreateState extends State<Create> {
         );
       }
     }
+  }
+
+  // Function to generate a random 5-character alphanumeric code
+  String _generateRandomCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final random = Random();
+    return String.fromCharCodes(Iterable.generate(
+      5,
+      (_) => chars.codeUnitAt(random.nextInt(chars.length)),
+    ));
   }
 
   @override
