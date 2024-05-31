@@ -76,13 +76,15 @@ class _QRScannerState extends State<QRScanner> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text("Error"),
-                  content: Text("Karena ${item.nama} telah terdaftar."),
-                  actions: [
+                  title: Text("Ditolak"),
+                  content: Text(
+                      "Akses ditolak karena ${item.nama} telah terdaftar."),
+                  actions: <Widget>[
                     TextButton(
                       child: Text("OK"),
                       onPressed: () {
                         Navigator.of(context).pop();
+                        controller.resumeCamera();
                       },
                     ),
                   ],
