@@ -47,34 +47,56 @@ class _QRScannerState extends State<QRScanner> {
       final String scannedData = scanData.code ?? "";
       fetchListItemByGambar(scannedData).then((item) {
         if (item != null) {
-          updateListItemStatus(item.id!).then((_) {
-            // Ensure updateListItemStatus accepts only one argument
+          if (item.keterangan == "belum hadir") {
+            updateListItemStatus(item.id!).then(
+              (_) {
+                // Ensure updateListItemStatus accepts only one argument
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Konfrimasi"),
+                      content: Text("${item.nama} terdaftar hadir."),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text("OK"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            controller.resumeCamera();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            );
+          } else {
             showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text("Confirmation"),
-                  content: Text("Sudah terdaftar hadir"),
-                  actions: <Widget>[
+                  title: Text("Error"),
+                  content: Text("Karena ${item.nama} telah terdaftar."),
+                  actions: [
                     TextButton(
                       child: Text("OK"),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        controller.resumeCamera();
                       },
                     ),
                   ],
                 );
               },
             );
-          });
+          }
         } else {
           showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text("Error"),
-                content: Text("Invalid QR Code or item not found."),
+                content: Text("Kode QR tidak valid atau item tidak ditemukan."),
                 actions: [
                   TextButton(
                     child: Text("OK"),
