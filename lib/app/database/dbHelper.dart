@@ -281,41 +281,46 @@ class DatabaseHelper {
   Future<void> deleteParentListItem(int? id) async {
     final db = await database;
 
-    // Delete the specified item
-    await db.delete(
-      'parentlist',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    // Start a transaction to ensure atomicity
+    await db.transaction((txn) async {
+      // Delete associated list items
+      await txn.delete(
+        'list',
+        where: 'parentId = ?',
+        whereArgs: [id],
+      );
 
-    // Reorder the remaining items
-    await _reorderParentListItems();
+      // Delete the specified parent item
+      await txn.delete(
+        'parentlist',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+
+      // Reorder the remaining parent items
+      await _reorderParentListItems(txn);
+    });
   }
 
-  Future<void> _reorderParentListItems() async {
-    final db = await database;
-
+  Future<void> _reorderParentListItems(Transaction txn) async {
     // Fetch all remaining items ordered by their current id
-    List<Map<String, dynamic>> items = await db.query(
+    List<Map<String, dynamic>> items = await txn.query(
       'parentlist',
       orderBy: 'id ASC',
     );
 
-    // Start a transaction to ensure atomicity
-    await db.transaction((txn) async {
-      // Reset the auto-increment counter
-      await txn.execute('DELETE FROM sqlite_sequence WHERE name="parentlist"');
+    // Reset the auto-increment counter
+    await txn.execute('DELETE FROM sqlite_sequence WHERE name="parentlist"');
 
-      // Update the id of each item to be sequential starting from 1
-      for (int i = 0; i < items.length; i++) {
-        await txn.update(
-          'parentlist',
-          {'id': i + 1},
-          where: 'id = ?',
-          whereArgs: [items[i]['id']],
-        );
-      }
-    });
+    // Update the id of each item to be sequential starting from 1
+    for (int i = 0; i < items.length; i++) {
+      await txn.update(
+        'parentlist',
+        {'id': i + 1},
+        where: 'id = ?',
+        whereArgs: [items[i]['id']],
+      );
+    }
   }
 
   Future<Map<String, dynamic>> getInvitationData(int parentId) async {
