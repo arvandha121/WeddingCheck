@@ -130,11 +130,44 @@ class DatabaseHelper {
 
   Future<int> deleteListItem(int id) async {
     final db = await database;
-    return db.delete(
+
+    // Delete the specified item
+    int result = await db.delete(
       'list',
       where: 'id = ?',
       whereArgs: [id],
     );
+
+    // Reorder the remaining items
+    await _reorderListItems();
+
+    return result;
+  }
+
+  Future<void> _reorderListItems() async {
+    final db = await database;
+
+    // Fetch all remaining items ordered by their current id
+    List<Map<String, dynamic>> items = await db.query(
+      'list',
+      orderBy: 'id ASC',
+    );
+
+    // Start a transaction to ensure atomicity
+    await db.transaction((txn) async {
+      // Reset the auto-increment counter
+      await txn.execute('DELETE FROM sqlite_sequence WHERE name="list"');
+
+      // Update the id of each item to be sequential starting from 1
+      for (int i = 0; i < items.length; i++) {
+        await txn.update(
+          'list',
+          {'id': i + 1},
+          where: 'id = ?',
+          whereArgs: [items[i]['id']],
+        );
+      }
+    });
   }
 
   Future<int> updateKeteranganHadir(int id) async {
@@ -149,7 +182,12 @@ class DatabaseHelper {
 
   Future<void> clearAllListItems() async {
     final db = await database;
+
+    // Delete all items from the list table
     await db.delete('list');
+
+    // Reset the auto-increment counter
+    await db.execute('DELETE FROM sqlite_sequence WHERE name="list"');
   }
 
   Future<ListItem?> getListItemByGambar(String gambar) async {
@@ -242,11 +280,42 @@ class DatabaseHelper {
 
   Future<void> deleteParentListItem(int? id) async {
     final db = await database;
+
+    // Delete the specified item
     await db.delete(
       'parentlist',
       where: 'id = ?',
       whereArgs: [id],
     );
+
+    // Reorder the remaining items
+    await _reorderParentListItems();
+  }
+
+  Future<void> _reorderParentListItems() async {
+    final db = await database;
+
+    // Fetch all remaining items ordered by their current id
+    List<Map<String, dynamic>> items = await db.query(
+      'parentlist',
+      orderBy: 'id ASC',
+    );
+
+    // Start a transaction to ensure atomicity
+    await db.transaction((txn) async {
+      // Reset the auto-increment counter
+      await txn.execute('DELETE FROM sqlite_sequence WHERE name="parentlist"');
+
+      // Update the id of each item to be sequential starting from 1
+      for (int i = 0; i < items.length; i++) {
+        await txn.update(
+          'parentlist',
+          {'id': i + 1},
+          where: 'id = ?',
+          whereArgs: [items[i]['id']],
+        );
+      }
+    });
   }
 
   Future<Map<String, dynamic>> getInvitationData(int parentId) async {
@@ -289,5 +358,15 @@ class DatabaseHelper {
       return ListItem.fromMap(results.first);
     }
     return null;
+  }
+
+  // Import data from CSV / Excel to database
+  Future<void> insertListItems(List<ListItem> listItems) async {
+    final db = await database;
+    Batch batch = db.batch();
+    for (var listItem in listItems) {
+      batch.insert('list', listItem.toMap());
+    }
+    await batch.commit(noResult: true);
   }
 }

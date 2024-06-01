@@ -17,6 +17,7 @@ class _HomesParentState extends State<HomesParent> {
 
   void _confirmDelete(int id, Color textColor) {
     TextEditingController confirmController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -63,9 +64,9 @@ class _HomesParentState extends State<HomesParent> {
             ),
             TextButton(
               child: Text('Hapus', style: TextStyle(color: Colors.red)),
-              onPressed: () {
+              onPressed: () async {
                 if (confirmController.text.toLowerCase() == 'hapus') {
-                  DatabaseHelper().deleteParentListItem(id);
+                  await DatabaseHelper().deleteParentListItem(id);
                   setState(() {}); // Refresh the state to update the UI
                   Navigator.of(context).pop(); // Close the dialog
                 } else {

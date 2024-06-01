@@ -7,6 +7,8 @@ import 'package:weddingcheck/views/other/menu/screens/homes-child/detail-form/de
 import 'package:weddingcheck/views/other/menu/screens/homes-child/edit-form/edit.dart';
 import 'package:weddingcheck/views/other/menu/screens/homes-parent/undangan/invite.dart';
 
+import 'import-data/import-excel.dart';
+
 class HomesChild extends StatefulWidget {
   final int parentId;
 
@@ -82,6 +84,25 @@ class _HomesChildState extends State<HomesChild> {
       appBar: AppBar(
         title: Text("List Tamu"),
         backgroundColor: Colors.deepPurple,
+        actions: [
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert),
+            tooltip: "Import Data",
+            onSelected: (String result) {
+              switch (result) {
+                case 'import_excel':
+                  importFromExcel(context, widget.parentId, _loadItems);
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'import_excel',
+                child: Text('Import from Excel'),
+              ),
+            ],
+          ),
+        ],
       ),
       body: Column(
         children: [
