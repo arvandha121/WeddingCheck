@@ -313,11 +313,7 @@ class _HomesChildState extends State<HomesChild> {
                                   if (shouldDelete == true) {
                                     await DatabaseHelper()
                                         .deleteListItem(item.id ?? 0);
-                                    setState(
-                                      () {
-                                        _items.removeAt(index);
-                                      },
-                                    );
+                                    _loadItems(); // Refresh the list after deletion
                                   }
                                 },
                               ),
