@@ -6,8 +6,10 @@ import 'package:weddingcheck/app/model/listItem.dart';
 import 'package:weddingcheck/views/other/menu/screens/homes-child/detail-form/detail.dart';
 import 'package:weddingcheck/views/other/menu/screens/homes-child/edit-form/edit.dart';
 import 'package:weddingcheck/views/other/menu/screens/homes-parent/undangan/invite.dart';
+import '../homes-parent/undangan/inviteall.dart';
 import 'export-data/exportListItemsToExcel.dart';
 import 'import-data/import-excel.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomesChild extends StatefulWidget {
   final int parentId;
@@ -96,19 +98,67 @@ class _HomesChildState extends State<HomesChild> {
                 case 'export_excel':
                   exportListItemsToExcel(context, _items);
                   break;
+                case 'download_all':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AllInvitationsPage(parentId: widget.parentId),
+                    ),
+                  );
+                  break;
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
+              PopupMenuItem<String>(
                 value: 'import_excel',
-                child: Text('Import from Excel'),
+                child: Row(
+                  children: [
+                    FaIcon(FontAwesomeIcons.fileImport,
+                        color: Colors.deepPurple, size: 20),
+                    SizedBox(width: 8),
+                    Text(
+                      'Import from Excel',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ),
-              const PopupMenuItem<String>(
+              PopupMenuItem<String>(
                 value: 'export_excel',
-                child: Text('Export to Excel'),
+                child: Row(
+                  children: [
+                    FaIcon(FontAwesomeIcons.fileExport,
+                        color: Colors.deepPurple, size: 20),
+                    SizedBox(width: 8),
+                    Text(
+                      'Export to Excel',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuItem<String>(
+                value: 'download_all',
+                child: Row(
+                  children: [
+                    FaIcon(FontAwesomeIcons.download,
+                        color: Colors.deepPurple, size: 20),
+                    SizedBox(width: 8),
+                    Text(
+                      'Download Semua List Tamu',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ),
             ],
-          ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            color: Colors.white,
+            elevation: 5,
+          )
         ],
       ),
       body: Column(

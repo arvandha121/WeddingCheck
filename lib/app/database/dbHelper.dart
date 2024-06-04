@@ -374,4 +374,12 @@ class DatabaseHelper {
     }
     await batch.commit(noResult: true);
   }
+
+  Future<List<ListItem>> getAllDownloadListItems() async {
+    final db = await database;
+    List<Map<String, dynamic>> maps = await db.query('list');
+    return List.generate(maps.length, (i) {
+      return ListItem.fromMap(maps[i]);
+    });
+  }
 }

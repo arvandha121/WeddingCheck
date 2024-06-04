@@ -54,6 +54,8 @@ dependencies:
   flutter_automation: ^2.0.0
   excel: ^3.0.0
   file_picker: ^5.3.1
+  archive: ^3.4.2
+  font_awesome_flutter: ^10.4.0
 
 dev_dependencies:
   flutter_test:
