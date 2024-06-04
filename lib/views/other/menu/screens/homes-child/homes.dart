@@ -6,7 +6,7 @@ import 'package:weddingcheck/app/model/listItem.dart';
 import 'package:weddingcheck/views/other/menu/screens/homes-child/detail-form/detail.dart';
 import 'package:weddingcheck/views/other/menu/screens/homes-child/edit-form/edit.dart';
 import 'package:weddingcheck/views/other/menu/screens/homes-parent/undangan/invite.dart';
-
+import 'export-data/exportListItemsToExcel.dart';
 import 'import-data/import-excel.dart';
 
 class HomesChild extends StatefulWidget {
@@ -87,11 +87,14 @@ class _HomesChildState extends State<HomesChild> {
         actions: [
           PopupMenuButton<String>(
             icon: Icon(Icons.more_vert),
-            tooltip: "Import Data",
+            tooltip: "Lainnya",
             onSelected: (String result) {
               switch (result) {
                 case 'import_excel':
                   importFromExcel(context, widget.parentId, _loadItems);
+                  break;
+                case 'export_excel':
+                  exportListItemsToExcel(context, _items);
                   break;
               }
             },
@@ -99,6 +102,10 @@ class _HomesChildState extends State<HomesChild> {
               const PopupMenuItem<String>(
                 value: 'import_excel',
                 child: Text('Import from Excel'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'export_excel',
+                child: Text('Export to Excel'),
               ),
             ],
           ),
