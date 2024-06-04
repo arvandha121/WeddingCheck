@@ -51,7 +51,7 @@ class _HomesParentState extends State<HomesParent> {
                     borderSide: BorderSide.none,
                   ),
                   filled: true,
-                  fillColor: Colors.black38,
+                  fillColor: Color.fromARGB(124, 245, 245, 245),
                   contentPadding: EdgeInsets.all(10),
                 ),
               ),
