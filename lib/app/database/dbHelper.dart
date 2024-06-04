@@ -190,6 +190,15 @@ class DatabaseHelper {
     await db.execute('DELETE FROM sqlite_sequence WHERE name="list"');
   }
 
+  Future<void> deleteListItemsByParentId(int parentId) async {
+    final db = await database;
+    await db.delete(
+      'list',
+      where: 'parentId = ?',
+      whereArgs: [parentId],
+    );
+  }
+
   Future<ListItem?> getListItemByGambar(String gambar) async {
     var db = await database;
     var result =

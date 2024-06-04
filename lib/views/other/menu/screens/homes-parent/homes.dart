@@ -15,7 +15,7 @@ class _HomesParentState extends State<HomesParent> {
     setState(() {});
   }
 
-  void _confirmDelete(int id, Color textColor) {
+  void _confirmDelete(int id, String title, Color textColor) {
     TextEditingController confirmController = TextEditingController();
 
     showDialog(
@@ -38,9 +38,7 @@ class _HomesParentState extends State<HomesParent> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: 10),
               TextField(
                 controller: confirmController,
                 decoration: InputDecoration(
@@ -69,12 +67,17 @@ class _HomesParentState extends State<HomesParent> {
                   await DatabaseHelper().deleteParentListItem(id);
                   setState(() {}); // Refresh the state to update the UI
                   Navigator.of(context).pop(); // Close the dialog
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('List berkas $title telah terhapus.'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'Kata kunci salah, masukkan "hapus" untuk mengkonfirmasi.',
-                      ),
+                          'Kata kunci salah, masukkan "hapus" untuk mengkonfirmasi.'),
                       duration: Duration(seconds: 2),
                     ),
                   );
@@ -189,8 +192,11 @@ class _HomesParentState extends State<HomesParent> {
                               ),
                               IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () =>
-                                    _confirmDelete(item.id!, textColor),
+                                onPressed: () => _confirmDelete(
+                                  item.id!,
+                                  item.title,
+                                  textColor,
+                                ),
                               ),
                             ],
                           ),

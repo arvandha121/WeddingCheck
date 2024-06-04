@@ -109,54 +109,63 @@ class _HomesChildState extends State<HomesChild> {
                   break;
               }
             },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
-                value: 'import_excel',
-                child: Row(
-                  children: [
-                    FaIcon(FontAwesomeIcons.fileImport,
-                        color: Colors.deepPurple, size: 20),
-                    SizedBox(width: 8),
-                    Text(
-                      'Import from Excel',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
+            itemBuilder: (BuildContext context) {
+              bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+              Color iconColor = isDarkMode ? Colors.white : Colors.deepPurple;
+              Color textColor = isDarkMode ? Colors.white : Colors.black;
+
+              return <PopupMenuEntry<String>>[
+                PopupMenuItem<String>(
+                  value: 'import_excel',
+                  child: Row(
+                    children: [
+                      FaIcon(FontAwesomeIcons.fileImport,
+                          color: iconColor, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        'Import from Excel',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: textColor),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              PopupMenuItem<String>(
-                value: 'export_excel',
-                child: Row(
-                  children: [
-                    FaIcon(FontAwesomeIcons.fileExport,
-                        color: Colors.deepPurple, size: 20),
-                    SizedBox(width: 8),
-                    Text(
-                      'Export to Excel',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
+                PopupMenuItem<String>(
+                  value: 'export_excel',
+                  child: Row(
+                    children: [
+                      FaIcon(FontAwesomeIcons.fileExport,
+                          color: iconColor, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        'Export to Excel',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: textColor),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              PopupMenuItem<String>(
-                value: 'download_all',
-                child: Row(
-                  children: [
-                    FaIcon(FontAwesomeIcons.download,
-                        color: Colors.deepPurple, size: 20),
-                    SizedBox(width: 8),
-                    Text(
-                      'Download Semua List Tamu',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
+                PopupMenuItem<String>(
+                  value: 'download_all',
+                  child: Row(
+                    children: [
+                      FaIcon(FontAwesomeIcons.download,
+                          color: iconColor, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        'Download Semua List Tamu',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: textColor),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ];
+            },
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            color: Colors.white,
+            color: Theme.of(context).cardColor, // Adjusted for theme
             elevation: 5,
           )
         ],

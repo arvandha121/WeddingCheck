@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weddingcheck/app/database/dbHelper.dart';
+import 'package:weddingcheck/app/model/parentListItem.dart';
 import 'package:weddingcheck/app/provider/provider.dart';
 import 'package:weddingcheck/views/splashscreen.dart';
 
@@ -12,6 +13,22 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  ParentListItem? _selectedParentItem;
+  List<ParentListItem> _parentItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadParentItems();
+  }
+
+  Future<void> _loadParentItems() async {
+    final parentItems = await DatabaseHelper().getParent();
+    setState(() {
+      _parentItems = parentItems;
+    });
+  }
+
   void _confirmLogout() {
     showDialog(
       context: context,
@@ -54,6 +71,95 @@ class _SettingsState extends State<Settings> {
   }
 
   void _showDeleteConfirmationDialog(BuildContext context, Color textColor) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Row(
+                children: [
+                  SizedBox(width: 8),
+                  Text('Pilih List Berkas'),
+                ],
+              ),
+              content: SingleChildScrollView(
+                child: SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ..._parentItems.map((parentItem) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: Card(
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: RadioListTile<ParentListItem>(
+                              title: Text(
+                                parentItem.title,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              value: parentItem,
+                              groupValue: _selectedParentItem,
+                              onChanged: (ParentListItem? value) {
+                                setState(() {
+                                  _selectedParentItem = value;
+                                });
+                              },
+                              activeColor: Colors.deepPurple,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                      if (_parentItems.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Tidak ada Parent List yang tersedia.',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Batal'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (_selectedParentItem != null) {
+                      Navigator.of(context).pop();
+                      _showFinalDeleteConfirmationDialog(context, textColor);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Pilih list berkas terlebih dahulu.'),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text(
+                    'Lanjutkan',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showFinalDeleteConfirmationDialog(
+      BuildContext context, Color textColor) {
     TextEditingController _textEditingController = TextEditingController();
     showDialog(
       context: context,
@@ -61,7 +167,12 @@ class _SettingsState extends State<Settings> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: const Text('Konfirmasi'),
+              title: Row(
+                children: [
+                  SizedBox(width: 3),
+                  Text('Konfirmasi'),
+                ],
+              ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +220,15 @@ class _SettingsState extends State<Settings> {
                     if (_textEditingController.text.toLowerCase() ==
                         'hapus semua') {
                       Navigator.of(context).pop();
-                      DatabaseHelper().clearAllListItems();
+                      DatabaseHelper()
+                          .deleteListItemsByParentId(_selectedParentItem!.id!);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              'Semua item dalam parent list "${_selectedParentItem!.title}" telah dihapus.'),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -153,8 +272,8 @@ class _SettingsState extends State<Settings> {
               color: Colors.redAccent,
               size: 40,
             ),
-            title: Text('Hapus Semua List'),
-            subtitle: Text('Menghapus semua item yang tersimpan'),
+            title: Text('Hapus List'),
+            subtitle: Text('Menghapus semua list tamu yang dipilih'),
             onTap: () => _showDeleteConfirmationDialog(context, textColor),
             tileColor: Theme.of(context).cardColor, // Adjusted for theme
             shape: RoundedRectangleBorder(
