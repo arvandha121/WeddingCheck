@@ -13,6 +13,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class InvitationPage extends StatefulWidget {
   final int parentId;
@@ -57,7 +58,9 @@ class _InvitationPageState extends State<InvitationPage> {
       ListItem? item = await DatabaseHelper().getListItem(widget.guestId);
       if (item != null) {
         setState(() {
-          _listItem = item; // Assuming _listItem is the guest's information
+          _listItem = item;
+          // Set the format based on the nohp value
+          _selectedFormat = item.nohp == "-" ? 'Fisik' : 'Digital';
         });
       } else {
         print("Guest not found");
@@ -141,6 +144,23 @@ class _InvitationPageState extends State<InvitationPage> {
                                     ),
                                   ),
                                 ),
+                                SizedBox(height: 10),
+                                if (_listItem.nohp != "-")
+                                  Container(
+                                    width: double.infinity,
+                                    height: 50,
+                                    child: ElevatedButton(
+                                      onPressed: _shareViaWhatsApp,
+                                      child: Text('Kirim via WhatsApp'),
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.green,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                               ],
                             )
                       : Container(),
@@ -503,6 +523,48 @@ class _InvitationPageState extends State<InvitationPage> {
       print("Failed to capture screenshot");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to share the invitation')),
+      );
+    }
+  }
+
+  void _shareViaWhatsApp() async {
+    // Periksa apakah _parentItem dan _listItem tidak null
+    if (_parentItem == null || _listItem.nohp == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                'Data tidak lengkap untuk mengirim undangan via WhatsApp')),
+      );
+      return;
+    }
+
+    // Periksa apakah semua properti yang diperlukan tidak null
+    if (_parentItem!.namapria == null ||
+        _parentItem!.namawanita == null ||
+        _parentItem!.tanggal == null ||
+        _parentItem!.lokasi == null ||
+        _listItem.nohp == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                'Data tidak lengkap untuk mengirim undangan via WhatsApp')),
+      );
+      return;
+    }
+
+    final message = 'Halo ${_listItem.nama}.';
+    // final message =
+    //     'Anda diundang ke Pernikahan ${_parentItem!.namapria} & ${_parentItem!.namawanita}, yang akan berlangsung pada ${_formatDate(_parentItem!.tanggal)} di ${_parentItem!.lokasi}.\nKami berharap Anda dapat bergabung dalam perayaan cinta dan kebahagiaan kami.';
+    final url =
+        'https://wa.me/${_listItem.nohp}?text=${Uri.encodeComponent(message)}';
+
+    print('WhatsApp URL: $url'); // Debugging statement
+
+    // ignore: deprecated_member_use
+    if (!await launch(url)) {
+      print('Could not launch WhatsApp'); // Debugging statement
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not launch WhatsApp')),
       );
     }
   }
