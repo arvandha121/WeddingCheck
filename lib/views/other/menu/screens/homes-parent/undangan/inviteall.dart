@@ -45,16 +45,18 @@ class _AllInvitationsPageState extends State<AllInvitationsPage> {
     print("Loading invitation data...");
     try {
       final data = await DatabaseHelper().getInvitationData(widget.parentId);
-      final allItems = await DatabaseHelper()
-          .getAllDownloadListItems(); // Get all list items
-      setState(() {
-        _parentItem = data['parent'];
-        _childrenItems = allItems; // Use all list items
-        _boundaryKeys.clear();
-        _boundaryKeys
-            .addAll(List.generate(_childrenItems.length, (_) => GlobalKey()));
-        _isLoading = false;
-      });
+      final items = await DatabaseHelper().getAllDownloadListItems(
+          widget.parentId); // Get list items by parentId
+      setState(
+        () {
+          _parentItem = data['parent'];
+          _childrenItems = items; // Use list items by parentId
+          _boundaryKeys.clear();
+          _boundaryKeys
+              .addAll(List.generate(_childrenItems.length, (_) => GlobalKey()));
+          _isLoading = false;
+        },
+      );
       print("Invitation data loaded successfully");
     } catch (e) {
       print("Error loading invitation data: $e");
@@ -269,10 +271,31 @@ class _AllInvitationsPageState extends State<AllInvitationsPage> {
     }
 
     if (status.isGranted) {
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(width: 16),
+                  Text("Downloading..."),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+
       try {
         final directory = Directory('/storage/emulated/0/Download');
         final zipFile =
-            File("${directory.path}/Invitations-${_parentItem!.title}.zip");
+            File("${directory!.path}/Invitations-${_parentItem!.title}.zip");
         final encoder = ZipEncoder();
         final archive = Archive();
 
@@ -285,21 +308,28 @@ class _AllInvitationsPageState extends State<AllInvitationsPage> {
               Duration(milliseconds: 100)); // Ensure the widget is rendered
           final imageBytes = await _capturePng(key);
 
-          final fileName = "invitation_${item.id}.png";
+          final fileName =
+              "invitation_${i + 1}.png"; // Use index as temporary ID
           final archiveFile =
               ArchiveFile(fileName, imageBytes.length, imageBytes);
           archive.addFile(archiveFile);
         }
 
-        final zipData = ZipEncoder().encode(archive);
+        final zipData = encoder.encode(archive);
         await zipFile.writeAsBytes(zipData!);
+
+        // Close loading dialog
+        Navigator.of(context).pop();
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
-                  'All invitations downloaded successfully at Download File!')),
+                  'All invitations downloaded successfully at ${directory.path}!')),
         );
       } catch (e) {
+        // Close loading dialog
+        Navigator.of(context).pop();
+
         print("Error downloading invitations: $e");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to download invitations')),

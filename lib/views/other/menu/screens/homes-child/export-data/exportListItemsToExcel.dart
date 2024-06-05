@@ -5,6 +5,8 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:weddingcheck/app/model/listItem.dart';
+import 'package:weddingcheck/app/model/parentListItem.dart';
+import 'package:weddingcheck/app/database/dbHelper.dart';
 import 'package:intl/intl.dart'; // Add this import for DateFormat
 
 Future<void> exportListItemsToExcel(
@@ -13,6 +15,7 @@ Future<void> exportListItemsToExcel(
   PermissionStatus status = await Permission.storage.request();
 
   if (status == PermissionStatus.granted) {
+    // Create a new Excel object each time the function is called
     var excel = Excel.createExcel();
     excel.rename(excel.getDefaultSheet()!, "Sheet1");
 
@@ -32,10 +35,6 @@ Future<void> exportListItemsToExcel(
 
     // Add data rows
     for (var item in items) {
-      // Debugging: Print item details
-      print(
-          'Adding item: ${item.parentId}, ${item.nama}, ${item.alamat}, ${item.kota}, ${item.kecamatan}, ${item.keluarga ?? ''}, ${item.keterangan}');
-
       sheetObject.appendRow([
         item.id,
         item.parentId,
@@ -50,8 +49,17 @@ Future<void> exportListItemsToExcel(
 
     try {
       DateTime now = DateTime.now();
-      String date = DateFormat('ddMMyyyy').format(now);
-      String fileName = 'listitem$date.xlsx';
+      String date = DateFormat('ddMMyyyy_HHmmss')
+          .format(now); // Add time to the filename to ensure uniqueness
+
+      // Fetch the ParentListItem based on parentId
+      int parentId = items.isNotEmpty ? items.first.parentId ?? 0 : 0;
+      ParentListItem? parentItem =
+          await DatabaseHelper().getParentItem(parentId);
+      String parentTitle = parentItem != null ? parentItem.title : 'unknown';
+
+      // Construct the file name with parent title
+      String fileName = 'Listitem_${parentTitle}_$date.xlsx';
 
       var fileBytes = excel.save();
       var directory = Directory('/storage/emulated/0/Download');
