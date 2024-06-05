@@ -159,7 +159,7 @@ class _EditParentsState extends State<EditParents> {
               SizedBox(height: 20),
               _buildTextField(
                 controller: namapriaController,
-                labelText: "Nama Pria",
+                labelText: "Nama Mempelai Pria",
                 icon: Icons.male_outlined,
                 validator: (value) =>
                     value!.isEmpty ? "Nama pria tidak boleh kosong" : null,
@@ -167,7 +167,7 @@ class _EditParentsState extends State<EditParents> {
               SizedBox(height: 20),
               _buildTextField(
                 controller: namawanitaController,
-                labelText: "Nama Wanita",
+                labelText: "Nama Mempelai Wanita",
                 icon: Icons.female_outlined,
                 validator: (value) =>
                     value!.isEmpty ? "Nama wanita tidak boleh kosong" : null,

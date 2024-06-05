@@ -32,8 +32,10 @@ class _CreateState extends State<Create> {
       // Set the gambarController text to name and keluarga values
       gambarController.text = "${nameController.text}${_generateRandomCode()}";
 
-      if (keluargaController.text.isEmpty || nohpController.text.isEmpty) {
+      if (keluargaController.text.isEmpty) {
         keluargaController.text = "-";
+      }
+      if (nohpController.text.isEmpty) {
         nohpController.text = "-";
       }
 
