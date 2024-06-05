@@ -29,7 +29,8 @@ Future<void> importFromExcel(
           String kota = row[4]?.value.toString() ?? '';
           String kecamatan = row[5]?.value.toString() ?? '';
           String keluarga = row[6]?.value.toString() ?? '';
-          String keterangan = row[7]?.value.toString() ?? '';
+          String nohp = row[7]?.value.toString() ?? '';
+          String keterangan = row[8]?.value.toString() ?? '';
           String gambar = "$nama${_generateRandomCode()}";
 
           // Validate keterangan field
@@ -49,8 +50,9 @@ Future<void> importFromExcel(
             kota: kota,
             kecamatan: kecamatan,
             keluarga: keluarga,
-            gambar: gambar,
+            nohp: nohp,
             keterangan: keterangan,
+            gambar: gambar,
           ));
         }
       }

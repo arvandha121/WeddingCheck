@@ -30,6 +30,7 @@ Future<void> exportListItemsToExcel(
       'kota',
       'kecamatan',
       'keluarga',
+      'nohp',
       'keterangan'
     ]);
 
@@ -43,6 +44,7 @@ Future<void> exportListItemsToExcel(
         item.kota,
         item.kecamatan,
         item.keluarga,
+        item.nohp,
         item.keterangan
       ]);
     }
