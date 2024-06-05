@@ -20,6 +20,7 @@ class _EditsState extends State<Edits> {
   late TextEditingController kotaController;
   late TextEditingController kecamatanController;
   late TextEditingController keluargaController;
+  late TextEditingController nohpController;
   late TextEditingController gambarController;
   late TextEditingController keteranganController;
 
@@ -36,12 +37,17 @@ class _EditsState extends State<Edits> {
     kotaController = TextEditingController(text: widget.item.kota);
     kecamatanController = TextEditingController(text: widget.item.kecamatan);
     keluargaController = TextEditingController(text: widget.item.keluarga);
+    nohpController = TextEditingController(text: widget.item.nohp);
     gambarController = TextEditingController(text: widget.item.gambar);
     keteranganController = TextEditingController(text: widget.item.keterangan);
     currentStatus = widget.item.keterangan;
   }
 
   void updateListItem() async {
+    if (keluargaController.text.isEmpty || nohpController.text.isEmpty) {
+      keluargaController.text = "-";
+      nohpController.text = "-";
+    }
     if (formKey.currentState!.validate()) {
       ListItem updatedItem = ListItem(
         id: widget.item.id,
@@ -51,6 +57,7 @@ class _EditsState extends State<Edits> {
         kota: kotaController.text,
         kecamatan: kecamatanController.text,
         keluarga: keluargaController.text,
+        nohp: nohpController.text,
         gambar: gambarController.text,
         keterangan: currentStatus ?? widget.item.keterangan,
       );
@@ -130,6 +137,20 @@ class _EditsState extends State<Edits> {
                 validator: (value) =>
                     value!.isEmpty ? "Kecamatan tidak boleh kosong" : null,
               ),
+              SizedBox(height: 20),
+              _buildTextField(
+                controller: nohpController,
+                labelText: "Nomor HP (boleh kosong)",
+                icon: Icons.phone,
+                onChanged: (value) {
+                  if (!value.startsWith("+62")) {
+                    nohpController.text = "+62";
+                    nohpController.selection = TextSelection.fromPosition(
+                      TextPosition(offset: nohpController.text.length),
+                    );
+                  }
+                },
+              ),
               Visibility(
                 visible: false, // Set to false to hide the TextFormField
                 child: TextFormField(
@@ -195,7 +216,8 @@ class _EditsState extends State<Edits> {
     required TextEditingController controller,
     required String labelText,
     required IconData icon,
-    required String? Function(String?) validator,
+    String? Function(String?)? validator,
+    void Function(String)? onChanged,
   }) {
     return TextFormField(
       controller: controller,
@@ -207,7 +229,8 @@ class _EditsState extends State<Edits> {
         prefixIcon: Icon(icon),
         filled: true,
       ),
-      validator: validator,
+      validator: validator ?? (value) => null,
+      onChanged: onChanged,
     );
   }
 }

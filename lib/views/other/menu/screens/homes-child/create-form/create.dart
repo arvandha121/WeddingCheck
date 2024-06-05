@@ -20,6 +20,7 @@ class _CreateState extends State<Create> {
   final kotaController = TextEditingController();
   final kecamatanController = TextEditingController();
   final keluargaController = TextEditingController();
+  final nohpController = TextEditingController();
   final gambarController = TextEditingController();
   final keteranganController = TextEditingController(text: "belum hadir");
 
@@ -31,6 +32,11 @@ class _CreateState extends State<Create> {
       // Set the gambarController text to name and keluarga values
       gambarController.text = "${nameController.text}${_generateRandomCode()}";
 
+      if (keluargaController.text.isEmpty || nohpController.text.isEmpty) {
+        keluargaController.text = "-";
+        nohpController.text = "-";
+      }
+
       try {
         await list.insertListItem(
           ListItem(
@@ -40,6 +46,7 @@ class _CreateState extends State<Create> {
             kota: kotaController.text,
             kecamatan: kecamatanController.text,
             keluarga: keluargaController.text,
+            nohp: nohpController.text,
             gambar: gambarController.text,
             keterangan: keteranganController.text,
           ),
@@ -93,23 +100,22 @@ class _CreateState extends State<Create> {
                 labelText: "Nama",
                 icon: Icons.person,
                 validator: (value) =>
-                    value!.isEmpty ? "Nama tidak boleh kosong" : null,
+                    value!.isEmpty ? "Textfield nama tidak boleh kosong" : null,
               ),
               SizedBox(height: 20),
               _buildTextField(
                 controller: keluargaController,
-                labelText: "Keluarga",
+                labelText: "Keluarga (boleh kosong)",
                 icon: Icons.group,
-                validator: (value) =>
-                    value!.isEmpty ? "Keluarga tidak boleh kosong" : null,
               ),
               SizedBox(height: 20),
               _buildTextField(
                 controller: alamatController,
                 labelText: "Alamat",
                 icon: Icons.location_city,
-                validator: (value) =>
-                    value!.isEmpty ? "Alamat tidak boleh kosong" : null,
+                validator: (value) => value!.isEmpty
+                    ? "Textfield alamat tidak boleh kosong"
+                    : null,
               ),
               SizedBox(height: 20),
               _buildTextField(
@@ -117,15 +123,30 @@ class _CreateState extends State<Create> {
                 labelText: "Kota",
                 icon: Icons.location_on,
                 validator: (value) =>
-                    value!.isEmpty ? "Kota tidak boleh kosong" : null,
+                    value!.isEmpty ? "Textfield kota tidak boleh kosong" : null,
               ),
               SizedBox(height: 20),
               _buildTextField(
                 controller: kecamatanController,
                 labelText: "Kecamatan",
                 icon: Icons.map,
-                validator: (value) =>
-                    value!.isEmpty ? "Kecamatan tidak boleh kosong" : null,
+                validator: (value) => value!.isEmpty
+                    ? "Textfield kecamatan tidak boleh kosong"
+                    : null,
+              ),
+              SizedBox(height: 20),
+              _buildTextField(
+                controller: nohpController,
+                labelText: "Nomor HP (boleh kosong)",
+                icon: Icons.phone,
+                onChanged: (value) {
+                  if (!value.startsWith("+62")) {
+                    nohpController.text = "+62";
+                    nohpController.selection = TextSelection.fromPosition(
+                      TextPosition(offset: nohpController.text.length),
+                    );
+                  }
+                },
               ),
               SizedBox(height: 30),
               ElevatedButton(
@@ -151,7 +172,8 @@ class _CreateState extends State<Create> {
     required TextEditingController controller,
     required String labelText,
     required IconData icon,
-    required String? Function(String?) validator,
+    String? Function(String?)? validator,
+    void Function(String)? onChanged,
   }) {
     return TextFormField(
       controller: controller,
@@ -163,7 +185,8 @@ class _CreateState extends State<Create> {
         prefixIcon: Icon(icon),
         filled: true,
       ),
-      validator: validator,
+      validator: validator ?? (value) => null,
+      onChanged: onChanged,
     );
   }
 }

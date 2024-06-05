@@ -50,6 +50,7 @@ class DatabaseHelper {
         kota TEXT NOT NULL,
         kecamatan TEXT NOT NULL,
         keluarga TEXT,
+        nohp TEXT,
         gambar TEXT NOT NULL,
         keterangan TEXT NOT NULL DEFAULT 'belum hadir' CHECK(keterangan IN ('hadir', 'belum hadir')),
         FOREIGN KEY (parentId) REFERENCES parentlist(id)

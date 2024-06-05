@@ -6,6 +6,7 @@ class ListItem {
   String kota;
   String kecamatan;
   String? keluarga;
+  String? nohp;
   String gambar;
   String keterangan;
 
@@ -17,6 +18,7 @@ class ListItem {
     required this.kota,
     required this.kecamatan,
     this.keluarga,
+    this.nohp,
     required this.gambar,
     required this.keterangan,
   });
@@ -30,6 +32,7 @@ class ListItem {
       'kota': kota,
       'kecamatan': kecamatan,
       'keluarga': keluarga,
+      'nohp': nohp,
       'gambar': gambar,
       'keterangan': keterangan,
     };
@@ -44,6 +47,7 @@ class ListItem {
       kota: map['kota'],
       kecamatan: map['kecamatan'],
       keluarga: map['keluarga'],
+      nohp: map['nohp'],
       gambar: map['gambar'],
       keterangan: map['keterangan'],
     );

@@ -146,18 +146,20 @@ class _CreateParentState extends State<CreateParent> {
               SizedBox(height: 20),
               _buildTextField(
                 controller: namapriaController,
-                labelText: "Nama Pria",
+                labelText: "Nama Mempelai Pria",
                 icon: Icons.male_outlined,
-                validator: (value) =>
-                    value!.isEmpty ? "Nama pria tidak boleh kosong" : null,
+                validator: (value) => value!.isEmpty
+                    ? "Nama mempelai pria tidak boleh kosong"
+                    : null,
               ),
               SizedBox(height: 20),
               _buildTextField(
                 controller: namawanitaController,
-                labelText: "Nama Wanita",
+                labelText: "Nama Mempelai Wanita",
                 icon: Icons.female_outlined,
-                validator: (value) =>
-                    value!.isEmpty ? "Nama wanita tidak boleh kosong" : null,
+                validator: (value) => value!.isEmpty
+                    ? "Nama mempelai wanita tidak boleh kosong"
+                    : null,
               ),
               SizedBox(height: 20),
               _buildTextField(

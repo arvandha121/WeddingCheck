@@ -59,6 +59,7 @@ class _DetailState extends State<Detail> {
                     infoSection(Icons.map, "Kecamatan", widget.item.kecamatan),
                     infoSection(Icons.family_restroom, "Keluarga",
                         widget.item.keluarga),
+                    infoSection(Icons.phone, "No Hp", widget.item.nohp),
                     SizedBox(height: 20),
                     Center(
                       child: QrImage(
