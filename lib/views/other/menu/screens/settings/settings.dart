@@ -252,50 +252,78 @@ class _SettingsState extends State<Settings> {
     );
   }
 
+  Future<bool> _onWillPop() async {
+    return await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Konfirmasi Keluar'),
+            content: Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('Tidak'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(
+                  'Iya',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     Color textColor = isDarkMode ? Colors.white : Colors.black;
-    return Scaffold(
-      body: ListView(
-        children: [
-          SwitchListTile(
-            title: Text('Dark Mode'),
-            value: Provider.of<UiProvider>(context).darkMode,
-            onChanged: (bool value) {
-              Provider.of<UiProvider>(context, listen: false).toggleDarkMode();
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.delete_forever,
-              color: Colors.redAccent,
-              size: 40,
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        body: ListView(
+          children: [
+            SwitchListTile(
+              title: Text('Dark Mode'),
+              value: Provider.of<UiProvider>(context).darkMode,
+              onChanged: (bool value) {
+                Provider.of<UiProvider>(context, listen: false)
+                    .toggleDarkMode();
+              },
             ),
-            title: Text('Hapus List'),
-            subtitle: Text('Menghapus semua list tamu yang dipilih'),
-            onTap: () => _showDeleteConfirmationDialog(context, textColor),
-            tileColor: Theme.of(context).cardColor, // Adjusted for theme
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+            ListTile(
+              leading: Icon(
+                Icons.delete_forever,
+                color: Colors.redAccent,
+                size: 40,
+              ),
+              title: Text('Hapus List'),
+              subtitle: Text('Menghapus semua list tamu yang dipilih'),
+              onTap: () => _showDeleteConfirmationDialog(context, textColor),
+              tileColor: Theme.of(context).cardColor, // Adjusted for theme
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-          ),
-          const Divider(),
-          ListTile(
-            leading: Icon(
-              Icons.exit_to_app,
-              color: Colors.redAccent,
-              size: 40,
+            const Divider(),
+            ListTile(
+              leading: Icon(
+                Icons.exit_to_app,
+                color: Colors.redAccent,
+                size: 40,
+              ),
+              title: Text('Logout'),
+              subtitle: Text('Keluar dari akun Anda'),
+              onTap: _confirmLogout,
+              tileColor: Theme.of(context).cardColor, // Adjusted for theme
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-            title: Text('Logout'),
-            subtitle: Text('Keluar dari akun Anda'),
-            onTap: _confirmLogout,
-            tileColor: Theme.of(context).cardColor, // Adjusted for theme
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

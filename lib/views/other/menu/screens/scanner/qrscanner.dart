@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:weddingcheck/app/database/dbHelper.dart';
 import 'package:weddingcheck/app/model/listItem.dart';
+import 'package:weddingcheck/views/other/menu/screens/homes-parent/homes.dart';
+import 'package:flutter/services.dart'; // Import this for SystemNavigator.pop()
 
 class QRScanner extends StatefulWidget {
   const QRScanner({Key? key}) : super(key: key);
@@ -125,41 +127,84 @@ class _QRScannerState extends State<QRScanner> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          QRView(
-            key: qrKey,
-            onQRViewCreated: _onQRViewCreated,
-            overlay: QrScannerOverlayShape(
-              borderColor: Colors.red,
-              borderRadius: 10,
-              borderLength: 30,
-              borderWidth: 10,
-              cutOutSize: 300,
-            ),
-          ),
-          Positioned(
-            right: 10,
-            bottom: 10,
-            child: FloatingActionButton(
-              onPressed: _toggleFlash,
-              child: Icon(
-                isFlashOn ? Icons.flash_off : Icons.flash_on,
-                color: Colors.white,
-              ),
-              backgroundColor: isFlashOn ? Colors.yellow[700] : Colors.black54,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Future<ListItem?> fetchListItemByGambar(String gambar) async {
     DatabaseHelper list = await DatabaseHelper();
     return list.getListItemByGambar(gambar);
+  }
+
+  Future<bool> _onWillPop() async {
+    controller?.pauseCamera(); // Pause the camera when the dialog appears
+    bool shouldExit = await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Konfirmasi Keluar'),
+            content: Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                  controller
+                      ?.resumeCamera(); // Resume the camera if "Tidak" is pressed
+                },
+                child: Text('Tidak'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                  controller
+                      ?.stopCamera(); // Stop the camera if "Iya" is pressed
+                },
+                child: Text(
+                  'Iya',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+
+    if (shouldExit) {
+      SystemNavigator.pop(); // Close the application
+    }
+
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            QRView(
+              key: qrKey,
+              onQRViewCreated: _onQRViewCreated,
+              overlay: QrScannerOverlayShape(
+                borderColor: Colors.red,
+                borderRadius: 10,
+                borderLength: 30,
+                borderWidth: 10,
+                cutOutSize: 300,
+              ),
+            ),
+            Positioned(
+              right: 10,
+              bottom: 10,
+              child: FloatingActionButton(
+                onPressed: _toggleFlash,
+                child: Icon(
+                  isFlashOn ? Icons.flash_off : Icons.flash_on,
+                  color: Colors.white,
+                ),
+                backgroundColor:
+                    isFlashOn ? Colors.yellow[700] : Colors.black54,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
