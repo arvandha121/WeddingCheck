@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:weddingcheck/app/provider/provider.dart';
+import 'package:flutter/services.dart'; // Import this for Clipboard
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   MyAppBar({Key? key}) : super(key: key);
@@ -13,6 +14,16 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     if (!await launchUrl(url)) {
       throw 'Could not launch $url';
     }
+  }
+
+  Future<void> _copyUrl(BuildContext context) async {
+    await Clipboard.setData(ClipboardData(text: url.toString()));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Link berhasil tersalin'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
@@ -65,6 +76,27 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                         onPressed: () async {
                           _launchUrl();
+                        },
+                      ),
+                      SizedBox(height: 10), // Add some space between buttons
+                      Text("Atau"),
+                      SizedBox(height: 10), // Add some space between buttons
+                      ElevatedButton.icon(
+                        icon: Icon(Icons.copy, color: Colors.white, size: 20),
+                        label: Text('Copy Link Gdrive'),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.deepPurple,
+                          onPrimary: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 10,
+                          ),
+                        ),
+                        onPressed: () async {
+                          _copyUrl(context);
                         },
                       ),
                     ],
